@@ -67,3 +67,24 @@ function downloadJson(json, filename) {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 }
+
+async function fetchAnswersByTestName(testName, count = 0) {
+    const url = getUrlByTestName(testName);
+    if (!url) return [];
+    return await fetch(url)
+        .then(async res => {
+            if (res.status == 200 || res.status == 304) {
+                return res.json();
+            } else if (res.status == 503 && count < 3) {
+                await sleep(5000);
+                return fetchAnswersByTestName(testName, count + 1);
+            } else {
+                return [];
+            }
+        })
+        .catch(err => {
+            console.error(`Error fetching solved key 
+                for Test : ${testName} Url: ${url}:`, err);
+            return [];
+        })
+}

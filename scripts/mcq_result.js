@@ -33,7 +33,7 @@ function getRQuestionsInCPage() {
         if (questionContent) question.question = questionContent;
 
         const answer = getRQAnswer(div);
-        if(answer) question.answer = answer;
+        if (answer) question.answer = answer;
 
         questionsInPage.push(question)
     });
@@ -51,13 +51,14 @@ function downloadMcqResultJson() {
         if (questionDivs.length == 0) return;
     }
     const pageSwitchElement = document.querySelectorAll('li')
-    if(pageSwitchElement){
-        for(let i = 1; i < pageSwitchElement.length - 1; i++){
-            questions = [...questions,...getRQuestionsInCPage()]
+    if (pageSwitchElement) {
+        for (let i = 0; i < pageSwitchElement.length; i++) {
+            if (!pageSwitchElement[i].innerText) continue;
+            questions = [...questions, ...getRQuestionsInCPage()]
             pageSwitchElement[i].querySelector('a').click()
         }
-    }else
+    } else
         questions = getRQuestionsInCPage()
-    const file_name = (getResultInfo()['Test'] || 'Assessment') +' Answers.json'
-    downloadJson(questions,file_name)
+    const file_name = (getResultInfo()['Test'] || 'Assessment') + ' Answers.json'
+    downloadJson(questions, file_name)
 }
