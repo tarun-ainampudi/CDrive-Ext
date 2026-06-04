@@ -48,6 +48,7 @@ function downloadCurrentPage() {
 
 function keydownHandler() {
     document.addEventListener("keydown", (e) => {
+        const ctrlKey = e.ctrlKey || e.metaKey;
         if (e.key === 'F9') {
             e.preventDefault();
             blockEvents();
@@ -59,6 +60,16 @@ function keydownHandler() {
         if (e.key === 'F10') {
             e.preventDefault();
             downloadCurrentPage();
+        }
+        if (ctrlKey && e.shiftKey && e.key.toLowerCase() === 'v') {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            pasteClipboardByTyping();
+        }
+        if (isTyperActive && e.key === 'Backspace') {
+            isTyperActive = false;
+            console.log("[Key Handler] Backspace encountered stopping Typer")
         }
     }, true);
 }

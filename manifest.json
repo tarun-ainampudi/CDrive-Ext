@@ -31,6 +31,7 @@
         "scripts/mcq_result.js",
         "scripts/test_handler.js",
         "scripts/url_handler.js",
+        "scripts/paste_handler.js",
         "scripts/login_handler.js",
         "scripts/mcq_handler.js"
       ],
