@@ -13,7 +13,7 @@
     "default_popup": "html/popup.html"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background/background.js"
   },
   "permissions": [
     "storage",
@@ -27,13 +27,13 @@
   "content_scripts": [
     {
       "js": [
-        "scripts/key_handler.js",
-        "scripts/mcq_result.js",
-        "scripts/test_handler.js",
-        "scripts/url_handler.js",
-        "scripts/paste_handler.js",
-        "scripts/login_handler.js",
-        "scripts/mcq_handler.js"
+        "content_scripts/key_handler.js",
+        "content_scripts/modules/mcq/result_page.js",
+        "content_scripts/modules/test_handler.js",
+        "content_scripts/modules/url_handler.js",
+        "content_scripts/modules/paste_handler.js",
+        "content_scripts/login_handler.js",
+        "content_scripts/modules/mcq/test_page.js"
       ],
       "matches": [
         "*://cdc.vit.ac.in/*",

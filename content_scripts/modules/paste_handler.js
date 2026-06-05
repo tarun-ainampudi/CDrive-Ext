@@ -69,7 +69,7 @@ function getInputElementInPage() {
         return answerEditors[0].querySelector('.ace_text-input');
     }
     const textInputs = document.querySelectorAll(".ace_text-input");
-    if (textInputs.length <= 0) {
+    if (textInputs.length === 0) {
         console.log(`[Paste Handler] No Text Elements with .ace_text-input`);
     } else {
         if (textInputs.length === 1) {
