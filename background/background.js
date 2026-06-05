@@ -30,7 +30,7 @@ async function injectLoginHandler(tabIndex) {
     for (const id of tabIds) {
         chrome.scripting.executeScript({
             target: { tabId: id, allFrames: true },
-            files: ["scripts/login_handler.js"],
+            files: ["content_scripts/login_handler.js"],
         }).then(() => console.log("Login Handler Injection Initiated"));
     }
 }
