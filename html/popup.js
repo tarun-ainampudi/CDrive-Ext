@@ -1,13 +1,4 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    const tabs = await chrome.tabs.query({
-        active: true,
-        currentWindow: true
-    });
-    const url = tabs[0]['url'];
-    console.log(`[popup] URL: ${url}`);
-    if (!url.includes("cdc.vit.ac.in")
-        && !url.includes("examly.io"))
-        return;
     popupInit();
 });
 
@@ -17,16 +8,16 @@ async function popupInit() {
     if (creds !== null) {
         const removeBtn = `<button id="removeStoredCredentials">Remove Credentials</button>`;
         const changeBtn = `<button id="showCredentials">Change Credentials</button>`;
-        credManager.innerHTML = removeBtn + changeBtn;
+        credManager.innerHTML = removeBtn //+ changeBtn;
         document.querySelector("#removeStoredCredentials").addEventListener("click", () => {
             removeStoredCredentials();
         }, true);
-        document.querySelector("#showCredentials").addEventListener("click", () => {
-            showCredentials();
-        }, true);
+        // document.querySelector("#showCredentials").addEventListener("click", () => {
+        //     showCredentials();
+        // }, true);
     } else {
         const addBtn = `<button id="showCredentials">Add Credentials</button>`;
-        credManager.innerHTML = addBtn;
+        credManager.innerHTML = ''//addBtn;
         document.querySelector("#showCredentials").addEventListener("click", () => {
             showCredentials();
         }, true);
