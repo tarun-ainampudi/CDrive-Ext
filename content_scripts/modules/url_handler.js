@@ -14,6 +14,8 @@ function getUrlByTestName(testName) {
     const origin = "https://cdcracker-backend"
         + ".onrender.com/courses/";
     switch (testName) {
+        //
+        // 2027_DBMS Preparatory Course_Level 1 (Only MCQ)
         case "PAT_DBMS_INTRODUCTION TO DBMS_MCQ":
             return origin + "6a15995d1f5b8ad919986e32/"
                 + "assessments/6a1599aa1f5b8ad919986e33/mcq";
@@ -44,6 +46,9 @@ function getUrlByTestName(testName) {
         case "PAT_DBMS_SUBQUERY_MCQ_L1":
             return origin + "6a15995d1f5b8ad919986e32/"
                 + "assessments/6a181cf38556eeb77e909209/mcq";
+        // 2027_DBMS Preparatory Course_Level 1 (Only MCQ)
+        //
+        // Neopat_2027_VIT_AP_Daily Aptitude Assessment
         case "Day 1 Aptitude Assessment":
             return origin + "6a0f1fab66d049fa93b310e8/"
                 + "assessments/6a102f43e46340b040cdbb98/mcq";
@@ -89,6 +94,9 @@ function getUrlByTestName(testName) {
         case "Day 15 Aptitude Assessment":
             return origin + "6a0f1fab66d049fa93b310e8/"
                 + "assessments/6a1c8139f55009f39f84ffcd/mcq";
+        // Neopat_2027_VIT_AP_Daily Aptitude Assessment
+        //
+        // 2027_Aptitude Preparatory Course
         case "Prep course_Number System_Level 1":
             return origin + "6a153257342105c4aa6bcefd/"
                 + "assessments/6a153295342105c4aa6bcefe/mcq";
@@ -332,6 +340,8 @@ function getUrlByTestName(testName) {
         case "Prep course_Mixtures and Alligations_Level 3":
             return origin + "6a153257342105c4aa6bcefd/"
                 + "assessments/6a158d9f9be1529b8af3be6b/mcq";
+        // 2027_Aptitude Preparatory Course
+        //
         default:
             return '';
     }
