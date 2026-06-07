@@ -15,7 +15,7 @@ function getUrlByTestName(testName) {
         + ".onrender.com/courses/";
     switch (testName) {
         //
-        // 2027_DBMS Preparatory Course_Level 1 (Only MCQ)
+        // 2027_DBMS Preparatory Course_Level 1
         case "PAT_DBMS_INTRODUCTION TO DBMS_MCQ":
             return origin + "6a15995d1f5b8ad919986e32/"
                 + "assessments/6a1599aa1f5b8ad919986e33/mcq";
@@ -88,7 +88,7 @@ function getUrlByTestName(testName) {
         case "PAT_DBMS_SUBQUERY_COD_FA_L1":
             return origin + "6a15995d1f5b8ad919986e32/"
                 + "assessments/6a18201b8556eeb77e909218/coding";
-        // 2027_DBMS Preparatory Course_Level 1 (Only MCQ)
+        // 2027_DBMS Preparatory Course_Level 1
         //
         // Neopat_2027_VIT_AP_Daily Aptitude Assessment
         case "Day 1 Aptitude Assessment":

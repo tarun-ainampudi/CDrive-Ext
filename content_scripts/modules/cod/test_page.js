@@ -14,18 +14,35 @@ function answerBasedOnTheLength(solvedKey, inputElement) {
     return '';
 }
 
+function checkMatchBasedOnIncludes(question, solvedQuestion) {
+    if (solvedQuestion.includes('and')) {
+        const sQParts = solvedQuestion.split(/\band\b/);
+        const filterQParts = sQParts.filter((part) => {
+            return question.includes(part);
+        })
+        if (sQParts.length === filterQParts.length) {
+            return true;
+        }
+    }
+    if (solvedQuestion.includes(question)
+        || question.includes(solvedQuestion)) {
+        return true;
+    }
+    return false;
+}
+
 function answerCodIfExistInKey(question, solvedKey, inputElement) {
     let answerIndex = -1;
     let nOfSQsIncludesQ = [];
+    const parsedQuestion = question.trim().toLowerCase();
     const nOfQuestions = solvedKey.reduce((acc, ele, index) => {
-        const solvedQ = ele.question;
-        console.log(`[COD TEST PAGE] [Debug] ${solvedQ.toLowerCase()} === ${question.toLowerCase()}`);
-        if (solvedQ.toLowerCase() === question.toLowerCase()) {
+        const solvedQ = ele.question.trim().toLowerCase();
+        console.log(`[COD TEST PAGE] [Debug] ${solvedQ} === ${parsedQuestion}`);
+        if (solvedQ === parsedQuestion) {
             answerIndex = index;
             acc = acc + 1;
         }
-        if (solvedQ.toLowerCase().includes(question.toLowerCase())
-            || question.toLowerCase().includes(solvedQ.toLowerCase())) {
+        if (checkMatchBasedOnIncludes(parsedQuestion,solvedQ)) {
             nOfSQsIncludesQ.push(index);
         }
         return acc;
