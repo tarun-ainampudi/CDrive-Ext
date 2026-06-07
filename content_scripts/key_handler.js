@@ -42,15 +42,37 @@ async function answerCurrentPageTest() {
     }
 }
 
+function resultPageDownload() {
+    const sections = getResultSections();
+    let results = {};
+    sections.forEach((section, index) => {
+        const selector = section
+            .querySelector('div[aria-label="title"]');
+        if (selector == null) {
+            console.log(`[Key Handler] Selector not found for index: ${index}`);
+            return;
+        }
+        selector.click();
+        const type = section.innerText.trim();
+        let result;
+        if (type === 'MCQ') {
+            result = downloadMcqResultJson();
+        } else {
+            result = downloadCodeResultJson();
+        }
+        results[type] = result;
+    });
+    const file_name = (getResultInfo()['Test'] || 'Assessment') + ' Answers.json'
+    downloadJson(results, file_name)
+}
+
 function downloadCurrentPage() {
     if (window.location.href.includes('/test')) {
         const testType = getTestType();
         if (testType !== 'Multi Choice Type Question') return;
         downloadMcqTestJson();
     } else if (window.location.href.includes('/result')) {
-        const resultType = getResultType();
-        if (resultType !== 'MCQ') return;
-        downloadMcqResultJson();
+        resultPageDownload()
     }
 }
 

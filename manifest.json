@@ -34,7 +34,8 @@
         "content_scripts/modules/paste_handler.js",
         "content_scripts/login_handler.js",
         "content_scripts/modules/mcq/test_page.js",
-        "content_scripts/modules/cod/test_page.js"
+        "content_scripts/modules/cod/test_page.js",
+        "content_scripts/modules/cod/result_page.js"
       ],
       "matches": [
         "*://cdc.vit.ac.in/*",

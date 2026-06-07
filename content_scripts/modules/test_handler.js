@@ -36,21 +36,26 @@ function getResultInfo() {
 }
 
 function switchResultPage() {
-    const switchDiv = document.querySelector("#sectionsID");
-    if (switchDiv) switchDiv.click();
+    const questionDivs = document
+        .querySelectorAll('[aria-labelledby="each-section-questions"]');
+    if (questionDivs.length === 0) {
+        console.log(`[Test Handler] Sections Not Found Switching Page`);
+        const switchDiv = document.querySelector("#sectionsID");
+        if (switchDiv) switchDiv.click();
+    }
 }
 
-function getResultType() {
-    let sectionTypeDiv = document
-        .querySelector('[aria-labelledby="sections"]')
-    if (!sectionTypeDiv) {
-        switchResultPage();
-        sectionTypeDiv = document
-            .querySelector('[aria-labelledby="sections"]')
+function getResultSections() {
+    switchResultPage();
+    const sectionTypeDivs = document
+        .querySelectorAll('div[aria-labelledby="each-section"]');
+    if (sectionTypeDivs.length === 0) {
+        console.log(`[Test Handler] Sections Not Found Even After Page Switch`);
+        return [];
     }
-    if (!sectionTypeDiv ||
-        !sectionTypeDiv.innerText.includes('MCQ')) return '';
-    else return 'MCQ';
+    else {
+        return [...sectionTypeDivs]
+    }
 }
 
 function downloadJson(json, filename) {
