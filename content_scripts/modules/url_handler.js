@@ -2,10 +2,8 @@
 function generateCasesFromJson(tests) {
     let str = '';
     tests.forEach(ele => {
-        if (ele.assessmentType === 'mcq') {
-            str += `case "${ele.name}":\nreturn origin + `
-                + `"${ele.courseId}/"\n+ "assessments/${ele._id}/${ele.assessmentType}";\n`
-        }
+        str += `case "${ele.name}":\nreturn origin + `
+            + `"${ele.courseId}/"\n+ "assessments/${ele._id}/${ele.assessmentType}";\n`
     });
     console.log(str.trim());
 }

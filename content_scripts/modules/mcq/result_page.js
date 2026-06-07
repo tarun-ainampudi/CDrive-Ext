@@ -50,15 +50,17 @@ function downloadMcqResultJson() {
             .querySelectorAll('[aria-labelledby="each-section-questions"]');
         if (questionDivs.length == 0) return;
     }
-    const pageSwitchElement = document.querySelectorAll('li')
-    if (pageSwitchElement) {
+    const pageSwitchElement = document.querySelectorAll('li');
+    if (pageSwitchElement.length !== 0) {
         for (let i = 0; i < pageSwitchElement.length; i++) {
             if (!pageSwitchElement[i].innerText) continue;
             questions = [...questions, ...getRQuestionsInCPage()]
             pageSwitchElement[i].querySelector('a').click()
         }
-    } else
+    } else {
         questions = getRQuestionsInCPage()
+        console.log(`[MCQ Result] Questions: ${JSON.stringify(questions)}`);
+    }
     const file_name = (getResultInfo()['Test'] || 'Assessment') + ' Answers.json'
     downloadJson(questions, file_name)
 }
