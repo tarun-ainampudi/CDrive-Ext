@@ -28,24 +28,66 @@ function getUrlByTestName(testName) {
         case "PAT_DBMS_DDL_MCQ_L1":
             return origin + "6a15995d1f5b8ad919986e32/"
                 + "assessments/6a15a3da977f8342a2091759/mcq";
+        case "PAT_DBMS_DDL_COD_PA_L1":
+            return origin + "6a15995d1f5b8ad919986e32/"
+                + "assessments/6a15a40d977f8342a2091764/coding";
+        case "PAT_DBMS_DDL_COD_FA_L1":
+            return origin + "6a15995d1f5b8ad919986e32/"
+                + "assessments/6a15d4fa779ff3355db9dcb9/coding";
         case "PAT_DBMS_DML_MCQ_L1":
             return origin + "6a15995d1f5b8ad919986e32/"
                 + "assessments/6a15d671779ff3355db9dcbc/mcq";
+        case "PAT_DBMS_DML_COD_PA_L1":
+            return origin + "6a15995d1f5b8ad919986e32/"
+                + "assessments/6a15d756779ff3355db9dcc7/coding";
+        case "PAT_DBMS_DML_COD_FA_L1":
+            return origin + "6a15995d1f5b8ad919986e32/"
+                + "assessments/6a15d908779ff3355db9dccb/coding";
         case "PAT_DBMS_Opeartors_MCQ_L1":
             return origin + "6a15995d1f5b8ad919986e32/"
                 + "assessments/6a15da4e779ff3355db9dcce/mcq";
+        case "PAT_DBMS_OPERATORS_COD_PA_L1":
+            return origin + "6a15995d1f5b8ad919986e32/"
+                + "assessments/6a17d30ae6a86e99628e9f46/coding";
+        case "PAT_DBMS_OPERATORS_COD_FA_L1":
+            return origin + "6a15995d1f5b8ad919986e32/"
+                + "assessments/6a17d510e6a86e99628e9f4a/coding";
         case "PAT_DBMS_AF_MCQ_L1":
             return origin + "6a15995d1f5b8ad919986e32/"
                 + "assessments/6a17d672e6a86e99628e9f4d/mcq";
+        case "PAT_DBMS_AGGREGATE FUNCTIONS_COD_PA_L1":
+            return origin + "6a15995d1f5b8ad919986e32/"
+                + "assessments/6a17db308556eeb77e9091de/coding";
+        case "PAT_DBMS_AGGREGATE FUNCTIONS_COD_FA_L1":
+            return origin + "6a15995d1f5b8ad919986e32/"
+                + "assessments/6a17dcfd8556eeb77e9091e2/coding";
         case "PAT_DBMS_SF_MCQ_L1":
             return origin + "6a15995d1f5b8ad919986e32/"
                 + "assessments/6a1810b98556eeb77e9091e5/mcq";
+        case "PAT_DBMS_STRING FUNCTIONS_COD_PA_L1":
+            return origin + "6a15995d1f5b8ad919986e32/"
+                + "assessments/6a1813a18556eeb77e9091f0/coding";
+        case "PAT_DBMS_STRING FUNCTIONS_COD_L1_FA":
+            return origin + "6a15995d1f5b8ad919986e32/"
+                + "assessments/6a1816468556eeb77e9091f4/coding";
         case "PAT_DBMS_JOINS_MCQ_L1":
             return origin + "6a15995d1f5b8ad919986e32/"
                 + "assessments/6a1816868556eeb77e9091f7/mcq";
+        case "PAT_DBMS_JOINS_COD_PA_L1":
+            return origin + "6a15995d1f5b8ad919986e32/"
+                + "assessments/6a181add8556eeb77e909202/coding";
+        case "PAT_DBMS_JOINS_COD_FA_L1":
+            return origin + "6a15995d1f5b8ad919986e32/"
+                + "assessments/6a181bd18556eeb77e909206/coding";
         case "PAT_DBMS_SUBQUERY_MCQ_L1":
             return origin + "6a15995d1f5b8ad919986e32/"
                 + "assessments/6a181cf38556eeb77e909209/mcq";
+        case "PAT_DBMS_SUBQUERY_COD_PA_L1":
+            return origin + "6a15995d1f5b8ad919986e32/"
+                + "assessments/6a181e8d8556eeb77e909214/coding";
+        case "PAT_DBMS_SUBQUERY_COD_FA_L1":
+            return origin + "6a15995d1f5b8ad919986e32/"
+                + "assessments/6a18201b8556eeb77e909218/coding";
         // 2027_DBMS Preparatory Course_Level 1 (Only MCQ)
         //
         // Neopat_2027_VIT_AP_Daily Aptitude Assessment

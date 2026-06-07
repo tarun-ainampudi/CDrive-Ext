@@ -23,14 +23,22 @@ async function answerCurrentPageTest() {
     const testType = getTestType();
     const keys = Object.keys(testInfo);
     if (keys.length == 0 || !keys.includes("Test Name")) {
-        console.log("Key Test Name Not Found in Test Info");
+        console.log("[Key Handler] Test Name Not Found in Test Info");
         return;
     }
     if (testType === 'Multi Choice Type Question') {
         const answersStatus = await answerMcqs(testInfo['Test Name']);
         blockEvents();
         alert(answersStatus);
-        console.log(answersStatus);
+        console.log(`[Key Handler] MCQ Answering Status: ${answersStatus}`);
+    } else if (testType === 'Single File Programming Question'
+        || testType.toLowerCase().includes('program')
+        || testType.toLowerCase().includes('cod')
+    ) {
+        const answersStatus = await answerCodes(testInfo['Test Name']);
+        blockEvents();
+        alert(answersStatus);
+        console.log(`[Key Handler] COD Answering Status: ${answersStatus}`);
     }
 }
 

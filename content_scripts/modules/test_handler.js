@@ -70,15 +70,19 @@ function downloadJson(json, filename) {
 
 async function fetchAnswersByTestName(testName, count = 0) {
     const url = getUrlByTestName(testName);
+    console.log(`[Test Handler] ${testName}: ${url}`);
     if (!url) return [];
     return await fetch(url)
         .then(async res => {
+            console.log(`[Test Handler] response status: ${res.status}`);
             if (res.status == 200 || res.status == 304) {
                 return res.json();
             } else if (res.status == 503 && count < 3) {
+                console.log(`[Test Handler] retrying fetch in 5 seconds`);
                 await sleep(5000);
                 return fetchAnswersByTestName(testName, count + 1);
             } else {
+                console.log(`[Test Handler] Unknown Status Code returning Empty List`);
                 return [];
             }
         })
