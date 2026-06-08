@@ -30,7 +30,7 @@ async function injectLoginHandler(tabIndex) {
     for (const id of tabIds) {
         chrome.scripting.executeScript({
             target: { tabId: id, allFrames: true },
-            files: ["content_scripts/login_handler.js"],
+            files: ["content_scripts/modules/runtime/login_handler.js"],
         }).then(() => console.log("Login Handler Injection Initiated"));
     }
 }
@@ -52,7 +52,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         chrome.scripting.executeScript({
             target: { tabId: sender.tab.id },
             world: 'MAIN',
-            files: ["content_scripts/modules/cod/ace_helper.js"],
+            files: ["content_scripts/modules/runtime/ace_helper.js"],
         }).then(() => {
             console.log("Ace Helper Injected")
             sendResponse('Injected');
