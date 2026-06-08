@@ -45,7 +45,7 @@ async function answerCurrentPageTest() {
 async function resultPageDownload() {
     const sections = getResultSections();
     console.log(`[Key Handler] [Debug] No.of Sections: ${sections.length}`);
-    let results = {};
+    let results = [];
     for (const [index, section] of sections.entries()) {
         console.log(`[Key Handler] [Debug] Section: ${index}`);
         const selector = section
@@ -62,7 +62,7 @@ async function resultPageDownload() {
         } else {
             result = await downloadCodeResultJson();
         }
-        results[type] = result;
+        results = [...results, ...result];
     }
     const file_name = (getResultInfo()['Test'] || 'Assessment') + ' Answers.json'
     downloadJson(results, file_name)

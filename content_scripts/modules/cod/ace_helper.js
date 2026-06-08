@@ -1,6 +1,6 @@
-function getCodesFromAceEditors(indexs) {
+function getCodesFromAceEditors(indexArray) {
     const editorDivs = document.querySelectorAll('.ace_editor');
-    const codes = indexs.map((index) => {
+    const codes = indexArray.map((index) => {
         if (index !== -1) return ace.edit(editorDivs[index]).getValue();
         return '';
     });
@@ -15,7 +15,7 @@ window.addEventListener('message', (event) => {
         console.log(`[Ace Helper] [Debug] data: ${JSON.stringify(data)}`);
         window.postMessage({
             action: 'ace_codes',
-            codes: getCodesFromAceEditors(data.indexs)
+            codes: getCodesFromAceEditors(data.indexArray)
         });
     }
 }, true);

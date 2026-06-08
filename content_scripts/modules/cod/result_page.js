@@ -1,3 +1,5 @@
+let isAceHelperInjected = false;
+
 function checkAllSolutions() {
     const solCheckBoxes = document
         .querySelectorAll('div[aria-labelledby="show-sol-check-cont"]');
@@ -8,39 +10,70 @@ function checkAllSolutions() {
     });
 }
 
-async function getAceEditorValues(divs) {
+async function resolveCodesResponse() {
+    return new Promise((resolve, reject) => {
+
+        const timeout = setTimeout(() => {
+            window.removeEventListener('message', handleMessage, true);
+            reject(new Error('Timeout reached waiting for codes from ace_helper'));
+        }, 2000);
+
+        const handleMessage = (event) => {
+            const data = event.data;
+            if (data.action !== undefined
+                && data.action === 'ace_codes') {
+                console.log(`[COD Result] [Debug] data: `
+                    + `${JSON.stringify(data)}`);
+                clearTimeout(timeout);
+                resolve(data.codes);
+                window.removeEventListener('message', handleMessage, true);
+            }
+        }
+
+        window.addEventListener('message', handleMessage, true);
+    })
+}
+
+function mapEditorsToIndex(divs) {
     const editors = [...document.querySelectorAll('.ace_editor')];
-    const editorIndexs = [...divs]
+    const indexArray = [...divs]
         .map((editor) => {
             return editors.indexOf(editor);
         });
-    console.log(`[COD Result] [Debug] Index: ${editorIndexs}`);
-    return chrome.runtime.sendMessage({
-        "action": "inject_ace_helper"
-    }).then((res) => {
-        console.log(`[COD Result] [Debug] runtime `
-            + `response: ${res}`);
-        if (res === 'Injected') {
-            window.postMessage({
-                action: 'get_ace_codes',
-                indexs: editorIndexs
-            });
-            return new Promise((resolve) => {
-                window.addEventListener('message', (event) => {
-                    const data = event.data;
-                    if (data.action !== undefined
-                        && data.action === 'ace_codes') {
-                        console.log(`[COD Result] [Debug] data: `
-                            + `${JSON.stringify(data)}`);
-                        resolve(data.codes);
-                    }
-                }, true);
-            })
+    return indexArray;
+}
+
+async function injectAceHelper() {
+    if (!isAceHelperInjected) {
+        const msg = await chrome.runtime.sendMessage({
+            "action": "inject_ace_helper"
+        });
+        if (msg === 'Injected') {
+            isAceHelperInjected = true;
+            return;
         }
-        console.log(`[COD Result] [Debug] Can't Get Code From Page`);
-        return ['CANT GET CODE', 'CANT GET CODE',
-            'CANT GET CODE', 'CANT GET CODE'];
-    });
+        console.log(`[COD Result] [Debug] runtime `
+            + `response: ${msg}`);
+        return;
+    }
+    console.log(`[COD Result] ace_helper already injected`);
+}
+
+async function getAceEditorValues(divs) {
+    await injectAceHelper();
+    const indexArray = mapEditorsToIndex(divs)
+    try {
+        window.postMessage({
+            action: 'get_ace_codes',
+            indexArray
+        });
+        const res = await resolveCodesResponse();
+        return res;
+    }
+    catch (err) {
+        console.log(`[COD Result] Error: ${err}`);
+        return Array.from({ length: divs.length }, () => `Can't Get Code`);
+    }
 }
 
 async function getSolutionsForCode(div) {
