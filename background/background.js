@@ -2,7 +2,7 @@ function checkForTabsAndReturnIds(tabs) {
     const filteredTabs = tabs.filter(tab => {
         return tab.url !== undefined && (tab.url.includes("cdc.vit.ac.in") || tab.url.includes("examly.io"));
     });
-    if(filteredTabs.length === 1) {
+    if (filteredTabs.length === 1) {
         return [filteredTabs[0].id];
     }
     else if (filteredTabs.length > 1) {
@@ -36,7 +36,7 @@ async function injectLoginHandler(tabIndex) {
 }
 
 chrome.webRequest.onCompleted.addListener((details) => {
-    console.log("[Completed Request]:", details);
+    // console.log("[Completed Request]:", details);
     if (details.url.includes("/logout") ||
         (details.url.includes("/login") && details.method === 'GET')
     ) {
@@ -44,3 +44,22 @@ chrome.webRequest.onCompleted.addListener((details) => {
     }
 
 }, { urls: ["*://api.examly.io/api/*"] });
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log(`[background] message: ${JSON.stringify(message)}`);
+    console.log(`[background] sender: ${JSON.stringify(sender)}`);
+    if (message.action === 'inject_ace_helper') {
+        chrome.scripting.executeScript({
+            target: { tabId: sender.tab.id },
+            world: 'MAIN',
+            files: ["content_scripts/modules/cod/ace_helper.js"],
+        }).then(() => {
+            console.log("Ace Helper Injected")
+            sendResponse('Injected');
+        }).catch((err) => {
+            console.log(`[background] Failed to inject ace_helper: ${err}`);
+            sendResponse(null);
+        });
+    }
+    return true;
+});

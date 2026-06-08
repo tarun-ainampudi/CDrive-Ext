@@ -42,15 +42,17 @@ async function answerCurrentPageTest() {
     }
 }
 
-function resultPageDownload() {
+async function resultPageDownload() {
     const sections = getResultSections();
+    console.log(`[Key Handler] [Debug] No.of Sections: ${sections.length}`);
     let results = {};
-    sections.forEach((section, index) => {
+    for (const [index, section] of sections.entries()) {
+        console.log(`[Key Handler] [Debug] Section: ${index}`);
         const selector = section
             .querySelector('div[aria-label="title"]');
         if (selector == null) {
             console.log(`[Key Handler] Selector not found for index: ${index}`);
-            return;
+            continue;
         }
         selector.click();
         const type = section.innerText.trim();
@@ -58,10 +60,10 @@ function resultPageDownload() {
         if (type === 'MCQ') {
             result = downloadMcqResultJson();
         } else {
-            result = downloadCodeResultJson();
+            result = await downloadCodeResultJson();
         }
         results[type] = result;
-    });
+    }
     const file_name = (getResultInfo()['Test'] || 'Assessment') + ' Answers.json'
     downloadJson(results, file_name)
 }
