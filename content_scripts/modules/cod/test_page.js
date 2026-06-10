@@ -90,7 +90,7 @@ function checkMatchBasedOnIncludes(question, solvedQuestion) {
 
 function answerCodIfExistInKey(question, solvedKey, inputElement) {
     let answerIndex = -1;
-    let nOfSQsIncludesQ = [];
+    const nOfSQsIncludesQ = [];
     const parsedQuestion = question.trim().toLowerCase();
     const nOfQuestions = solvedKey.reduce((acc, ele, index) => {
         const solvedQ = ele.question.trim().toLowerCase();

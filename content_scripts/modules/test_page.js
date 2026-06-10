@@ -2,7 +2,7 @@ function getInfo(divs) {
     if (divs.length == 0) return {};
     const info = {};
     divs.forEach(div => {
-        let parts = div.innerText.split(":");
+        const parts = div.innerText.split(":");
         if (parts.length != 2 || parts[0].trim() == '') return;
         info[parts[0].trim()] = parts[1].trim();
     });

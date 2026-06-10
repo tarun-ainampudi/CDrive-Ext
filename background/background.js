@@ -25,7 +25,12 @@ async function getTabIdsForLoginHandler() {
     return checkForTabsAndReturnIds(tabs);
 }
 async function injectLoginHandler(tabIndex) {
-    const tabIds = await getTabIdsForLoginHandler();
+    let tabIds;
+    if (tabIndex !== -1) {
+        tabIds = [tabIndex];
+    } else {
+        tabIds = await getTabIdsForLoginHandler();
+    }
     console.log("[Inject Login Handler] Tab Ids: ", tabIds);
     for (const id of tabIds) {
         chrome.scripting.executeScript({

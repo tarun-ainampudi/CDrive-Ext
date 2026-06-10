@@ -16,7 +16,7 @@ function attachObserverToSubmitBtn() {
     const submitBtn = formDiv?.querySelector('button');
     if (submitBtn) {
         console.log("[Login Handler] Attaching Observer to Submit Button");
-        submitBtn.onclick = (event) => {
+        submitBtn.onclick = () => {
             const creds = getLoginCredsToSave();
             if (Object.keys(creds).length === 2) {
                 console.log(`[Login Handler] Save Creds: ${JSON.stringify(creds)}`);
@@ -81,7 +81,7 @@ async function loginHandlerInit() {
     console.log("[Login Handler] Script Injected");
     const creds = await getStoredCredentials();
     if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", (event) => {
+        document.addEventListener("DOMContentLoaded", () => {
             addListenerToAutoFill(creds);
         });
     } else {

@@ -66,7 +66,7 @@ function answerBasedOnTheOption(solvedKey) {
 
 function answerQueIfExistInKey(question, solvedKey) {
     let answerIndex = -1;
-    let nOfSQsIncludesQ = [];
+    const nOfSQsIncludesQ = [];
     const nOfQuestions = solvedKey.reduce((acc, ele, index) => {
         const solvedQ = ele.question;
         if (solvedQ === question) {
