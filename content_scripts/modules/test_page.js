@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 function getInfo(divs) {
   if (divs.length == 0) return {};
   const info = {};

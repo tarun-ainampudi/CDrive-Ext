@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 function selectQuestion(questionSelector) {
@@ -85,6 +86,7 @@ function answerQueIfExistInKey(question, solvedKey) {
   return answerBasedOnTheOption(solvedKey);
 }
 
+// eslint-disable-next-line no-unused-vars
 async function answerMcqs(testName) {
   let status = "MCQ Questions Not Found";
 
@@ -117,6 +119,7 @@ async function answerMcqs(testName) {
   return status;
 }
 
+// eslint-disable-next-line no-unused-vars
 function downloadMcqTestJson() {
   const questionNumberDivs = document.querySelectorAll(
     "div[aria-labelledby='each-question']",

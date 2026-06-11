@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 // Generate Cases Using Below Function
 function generateCasesFromJson(tests) {
   let str = "";

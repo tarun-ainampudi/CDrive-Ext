@@ -119,6 +119,7 @@ async function getRCodesInCPage() {
   return codesInPage;
 }
 
+// eslint-disable-next-line no-unused-vars
 async function downloadCodeResultJson() {
   switchResultPage();
   let questions = [];

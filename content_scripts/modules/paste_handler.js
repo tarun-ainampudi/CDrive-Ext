@@ -27,6 +27,7 @@ async function injectTextInToInput(text) {
   console.log("[Paste Handler] Can't inject text in to input");
 }
 
+// eslint-disable-next-line no-unused-vars
 async function pasteClipboardByTyping() {
   console.log("[Paste Handler] pasteClipboardByTyping Initiated");
   try {

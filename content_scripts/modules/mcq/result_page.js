@@ -43,6 +43,7 @@ function getRQuestionsInCPage() {
   return questionsInPage;
 }
 
+// eslint-disable-next-line no-unused-vars
 function downloadMcqResultJson() {
   switchResultPage();
   let questions = [];
