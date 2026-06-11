@@ -1,19 +1,19 @@
-function checkForDuplicationOfQs(solvedKey) {
-  const seen = new Set();
-  for (const { question } of solvedKey) {
-    if (seen.has(question)) {
-      return true;
-    }
-    seen.add(question);
-  }
-  return false;
+const codeLanguages = ['c', 'c++', 'java', 'python', 'mysql']
+
+function isSolvedCodeFormatValid(solvedKey) {
+  const checkObj = solvedKey[0];
+  const keys = Object.keys(checkObj);
+  console.log(`[COD Test] [Debug] Keys: ${keys}`);
+  return keys.every(
+    (key) => key === 'question' || codeLanguages.includes(key)
+  );
 }
 
 function mergeSameQuestionsIntoOne(solvedKey) {
   const tempDic = {};
   for (const { question, language, code } of solvedKey) {
     tempDic[question] ??= { question };
-    tempDic[question][language] = code;
+    tempDic[question][language === 'sql' ? 'mysql' : language] = code;
   }
   const mergedSolvedKey = Object.values(tempDic);
   console.log(
@@ -22,10 +22,17 @@ function mergeSameQuestionsIntoOne(solvedKey) {
   return mergedSolvedKey;
 }
 
-function fillCodeInInput(code, inputElement) {
-  inputElement.value = code;
-  inputElement.dispatchEvent(new Event("input", { bubbles: true }));
-  return "code";
+function fillCodeInInput(codeObj, inputElement) {
+  const keys = Object.keys(codeObj);
+  const isFilled = keys.some((key) => {
+    if (key === 'question') return false;
+    else if (key === selectLanguageOfCode(key)) {
+      inputElement.value = codeObj[key];
+      inputElement.dispatchEvent(new Event("input", { bubbles: true }));
+      return true;
+    } else return false;
+  });
+  return isFilled;
 }
 
 function selectLanguageOfCode(lang) {
@@ -71,7 +78,7 @@ function answerBasedOnTheLength(solvedKey, inputElement) {
     console.log(
       `[COD TEST PAGE] Answering based on the length of Key and Questions`,
     );
-    return fillCodeInInput(solvedKey[0]["code"], inputElement);
+    return fillCodeInInput(solvedKey[0], inputElement);
   }
   return "";
 }
@@ -98,7 +105,7 @@ function answerCodIfExistInKey(question, solvedKey, inputElement) {
   const parsedQuestion = question.trim().toLowerCase();
   const nOfQuestions = solvedKey.reduce((acc, ele, index) => {
     const solvedQ = ele.question.trim().toLowerCase();
-    console.log(`[COD TEST PAGE] [Debug] ${solvedQ} === ${parsedQuestion}`);
+    // console.log(`[COD TEST PAGE] [Debug] ${solvedQ} === ${parsedQuestion}`);
     if (solvedQ === parsedQuestion) {
       answerIndex = index;
       acc = acc + 1;
@@ -110,10 +117,10 @@ function answerCodIfExistInKey(question, solvedKey, inputElement) {
   }, 0);
   if (nOfQuestions == 1 && answerIndex != -1) {
     console.log(`[COD TEST PAGE] Found Exact Question`);
-    return fillCodeInInput(solvedKey[answerIndex]["code"], inputElement);
+    return fillCodeInInput(solvedKey[answerIndex], inputElement);
   } else if (nOfSQsIncludesQ.length == 1) {
     console.log(`[COD TEST PAGE] Found Similar Question`);
-    return fillCodeInInput(solvedKey[nOfSQsIncludesQ[0]]["code"], inputElement);
+    return fillCodeInInput(solvedKey[nOfSQsIncludesQ[0]], inputElement);
   }
   console.log(`[COD TEST PAGE] Can't Find Question`);
   return answerBasedOnTheLength(solvedKey, inputElement);
@@ -137,8 +144,14 @@ async function answerCodes(testName) {
 
   status = `Solved Key Not Found for ${testName}`;
 
-  const solvedKey = await fetchAnswersByTestName(testName);
+  let solvedKey = await fetchAnswersByTestName(testName);
   if (!Array.isArray(solvedKey) || solvedKey.length === 0) return status;
+
+  status = `Invalid SolvedKey ${testName}`;
+
+  if (!isSolvedCodeFormatValid(solvedKey)) {
+    solvedKey = mergeSameQuestionsIntoOne(solvedKey);
+  }
 
   status = "Completed Answering CODs";
 

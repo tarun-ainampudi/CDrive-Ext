@@ -12,7 +12,8 @@ function generateCasesFromJson(tests) {
 }
 
 function getUrlByTestName(testName) {
-  const origin = "https://cdcracker-backend" + ".onrender.com/courses/";
+  const origin = "https://cdcracker-backend.onrender.com/courses/";
+  const localOrigin = "assets/tests/"
   switch (testName) {
     //
     // 2027_DBMS Preparatory Course_Level 1
@@ -745,6 +746,6 @@ function getUrlByTestName(testName) {
     // 2027_Aptitude Preparatory Course
     //
     default:
-      return "";
+      return localOrigin + testName + '.json';
   }
 }
