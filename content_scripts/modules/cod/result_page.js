@@ -79,7 +79,10 @@ async function getSolutionsForCode(div) {
   const aceDivs = div.querySelectorAll(".ace_editor");
   const codeContents = await getAceEditorValues(aceDivs);
   answerHeaders.forEach((answer, index) => {
-    const lang = answer.innerText.split("\n")[1];
+    const lang = answer.innerText
+      .split("\n")[1]
+      .replace(/[^A-Za-z+]/g, "")
+      .toLowerCase();
     const code = codeContents[index];
     console.log(`[COD Result] [Debug] code: ${code}`);
     solutions[lang] = code;
@@ -119,17 +122,7 @@ async function getRCodesInCPage() {
 async function downloadCodeResultJson() {
   switchResultPage();
   let questions = [];
-  const pageSwitchElement = document.querySelectorAll("li");
-  if (pageSwitchElement.length !== 0) {
-    for (let i = 0; i < pageSwitchElement.length; i++) {
-      if (!pageSwitchElement[i].innerText) continue;
-      const currPageQs = await getRCodesInCPage();
-      questions = [...questions, ...currPageQs];
-      pageSwitchElement[i].querySelector("a").click();
-    }
-  } else {
-    questions = await getRCodesInCPage();
-    console.log(`[COD Result] Questions: ${JSON.stringify(questions)}`);
-  }
+  questions = await getRCodesInCPage();
+  console.log(`[COD Result] Questions: ${JSON.stringify(questions)}`);
   return questions;
 }
