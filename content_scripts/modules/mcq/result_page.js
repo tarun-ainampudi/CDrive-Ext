@@ -51,8 +51,8 @@ function downloadMcqResultJson() {
     if (pageSwitchElement.length !== 0) {
         for (let i = 0; i < pageSwitchElement.length; i++) {
             if (!pageSwitchElement[i].innerText) continue;
-            questions = [...questions, ...getRQuestionsInCPage()];
             pageSwitchElement[i].querySelector('a').click();
+            questions = [...questions, ...getRQuestionsInCPage()];
         }
     } else {
         questions = getRQuestionsInCPage();

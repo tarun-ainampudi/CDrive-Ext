@@ -47,7 +47,8 @@ function selectOption(answer) {
     const options = getOptionsForQuestion();
     const ansIndex = options.indexOf(answer.replace(/\s+/g, ' ').trim());
     if (ansIndex != -1) {
-        optionsDivs[ansIndex].firstChild.click();
+        if (optionsDivs[ansIndex].querySelector('input:checked') === null)
+            optionsDivs[ansIndex].firstChild.click();
         return options[ansIndex];
     }
     return '';

@@ -56,7 +56,7 @@ async function resultPageDownload() {
         selector.click();
         const type = section.innerText.trim();
         let result;
-        if (type === 'MCQ') {
+        if (type.includes('MCQ')) {
             result = downloadMcqResultJson();
         } else {
             result = await downloadCodeResultJson();
