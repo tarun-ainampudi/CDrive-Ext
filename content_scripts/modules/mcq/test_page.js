@@ -62,6 +62,7 @@ function answerBasedOnTheOption(solvedKey) {
         );
     });
     if (questionsHavingCOps.length == 1) {
+        console.log(`[MCQ TEST PAGE] Answering based on the Option`);
         return selectOption(questionsHavingCOps[0].answer);
     }
     return '';
@@ -82,11 +83,21 @@ function answerQueIfExistInKey(question, solvedKey) {
         return acc;
     }, 0);
     if (nOfQuestions == 1 && answerIndex != -1) {
+        console.log(`[MCQ TEST PAGE] Found Exact Question`);
         return selectOption(solvedKey[answerIndex].answer);
     } else if (nOfSQsIncludesQ.length == 1) {
+        console.log(`[MCQ TEST PAGE] Found Similar Question`);
         return selectOption(solvedKey[nOfSQsIncludesQ[0]].answer);
     }
     return answerBasedOnTheOption(solvedKey);
+}
+
+function convertKeyToObj(solvedKey) {
+    const solvedObj = {};
+    solvedKey.forEach((item) => {
+        solvedObj[item.question] = item.answer;
+    });
+    return solvedObj;
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -103,13 +114,19 @@ async function answerMcqs(testName) {
     const solvedKey = await fetchAnswersByTestName(testName);
     if (!Array.isArray(solvedKey) || solvedKey.length === 0) return status;
 
+    const solvedObj = convertKeyToObj(solvedKey);
+
     status = 'Completed Answering MCQs';
 
     questionNumberDivs.forEach((questionSelector, qIndex) => {
         const questionNumber = selectQuestion(questionSelector);
         if (questionNumber) {
             const questionContent = getQuestionContent();
-            const answer = answerQueIfExistInKey(questionContent, solvedKey);
+            let answer;
+            if (solvedObj[questionContent] !== undefined) {
+                console.log(`[MCQ TEST PAGE] Found Exact Question Obj`);
+                answer = selectOption(solvedObj[questionContent]);
+            } else answer = answerQueIfExistInKey(questionContent, solvedKey);
             if (!answer)
                 status =
                     'Some Questions are not Found in solvedKey Answer them Manually';
