@@ -2,13 +2,14 @@
 
 // Generate Cases Using Below Function
 function generateCasesFromJson(tests) {
-    let obj = {};
+    const obj = {};
     tests.forEach((ele) => {
         obj[ele.name] =
             `${ele.courseId}/assessments/${ele._id}/${ele.assessmentType}`;
     });
     console.log(obj);
 }
+
 function getUrlByTestName(testName) {
     const origin = 'https://cdcracker-backend.onrender.com/courses/';
     const localOrigin = 'assets/tests/';
