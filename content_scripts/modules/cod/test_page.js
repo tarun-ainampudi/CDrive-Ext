@@ -78,7 +78,7 @@ function answerBasedOnTheLength(solvedKey, inputElement) {
     ).length;
     if (solvedKey.length === 1 && nOfQuestions === 1) {
         console.log(
-            `[COD TEST PAGE] Answering based on the length of Key and Questions`
+            `[COD Test] Answering based on the length of Key and Questions`
         );
         return fillCodeInInput(solvedKey[0], inputElement);
     }
@@ -86,31 +86,36 @@ function answerBasedOnTheLength(solvedKey, inputElement) {
 }
 
 function checkMatchBasedOnIncludes(question, solvedQuestion) {
-    if (solvedQuestion.includes('and')) {
-        const sQParts = solvedQuestion.split(/\band\b/);
-        const filterQParts = sQParts.filter((part) => {
-            return question.includes(part);
-        });
-        if (sQParts.length === filterQParts.length) {
-            return true;
-        }
-    }
+    console.log(`[COD Test] [Debug] solvedQuestion: ${solvedQuestion}`);
     if (
         solvedQuestion.includes(question) ||
         question.includes(solvedQuestion)
     ) {
+        console.log(`[COD Test] [Debug] Similar question match`);
         return true;
+    }
+    if (solvedQuestion.includes('and')) {
+        const sQParts = solvedQuestion.split(/\band\b/);
+        console.log(`[COD Test] [Debug] sQParts: ${sQParts}`);
+        const filterQParts = sQParts.filter((part) => {
+            return question.includes(part);
+        });
+        console.log(`[COD Test] [Debug] filterQParts: ${filterQParts}`);
+        if (sQParts.length === filterQParts.length) {
+            return true;
+        }
     }
     return false;
 }
 
 function answerCodIfExistInKey(question, solvedKey, inputElement) {
+    console.log(`[COD Test] [Debug] Question: ${question}`);
     let answerIndex = -1;
     const nOfSQsIncludesQ = [];
     const parsedQuestion = question.trim().toLowerCase();
     const nOfQuestions = solvedKey.reduce((acc, ele, index) => {
         const solvedQ = ele.question.trim().toLowerCase();
-        // console.log(`[COD TEST PAGE] [Debug] ${solvedQ} === ${parsedQuestion}`);
+        // console.log(`[COD Test] [Debug] ${solvedQ} === ${parsedQuestion}`);
         if (solvedQ === parsedQuestion) {
             answerIndex = index;
             acc = acc + 1;
@@ -121,13 +126,13 @@ function answerCodIfExistInKey(question, solvedKey, inputElement) {
         return acc;
     }, 0);
     if (nOfQuestions == 1 && answerIndex != -1) {
-        console.log(`[COD TEST PAGE] Found Exact Question`);
+        console.log(`[COD Test] Found Exact Question`);
         return fillCodeInInput(solvedKey[answerIndex], inputElement);
     } else if (nOfSQsIncludesQ.length == 1) {
-        console.log(`[COD TEST PAGE] Found Similar Question`);
+        console.log(`[COD Test] Found Similar Question`);
         return fillCodeInInput(solvedKey[nOfSQsIncludesQ[0]], inputElement);
     }
-    console.log(`[COD TEST PAGE] Can't Find Question`);
+    console.log(`[COD Test] Can't Find Question`);
     return answerBasedOnTheLength(solvedKey, inputElement);
 }
 
@@ -167,7 +172,7 @@ async function answerCodes(testName) {
             const questionContent = getQuestionContent();
             const inputElement = getInputElementInPage();
             if (inputElement == null) {
-                console.log(`[COD TEST PAGE] Can't find input element`);
+                console.log(`[COD Test] Can't find input element`);
                 status =
                     'Some Questions are not Found in solvedKey Answer them Manually';
                 return;
@@ -184,7 +189,7 @@ async function answerCodes(testName) {
             status =
                 'Partially Completed Answering CODs Verify Manually For Errors';
             console.warn(
-                `[COD TEST PAGE] No inner div found for question index ${qIndex}`
+                `[COD Test] No inner div found for question index ${qIndex}`
             );
         }
     });
