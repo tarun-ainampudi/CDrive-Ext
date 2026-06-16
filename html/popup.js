@@ -7,7 +7,7 @@ async function popupInit() {
     const credManager = document.querySelector('#credential_manager');
     if (creds !== null) {
         const removeBtn = `<button id="removeStoredCredentials">Remove Credentials</button>`;
-        //const changeBtn = `<button id="showCredentials">Change Credentials</button>`;
+        // const changeBtn = `<button id="showCredentials">Change Credentials</button>`;
         credManager.innerHTML = removeBtn; //+ changeBtn;
         document.querySelector('#removeStoredCredentials').addEventListener(
             'click',
@@ -20,15 +20,15 @@ async function popupInit() {
         //     showCredentials();
         // }, true);
     } else {
-        //const addBtn = `<button id="showCredentials">Add Credentials</button>`;
+        // const addBtn = `<button id="showCredentials">Add Credentials</button>`;
         credManager.innerHTML = ''; //addBtn;
-        document.querySelector('#showCredentials').addEventListener(
-            'click',
-            () => {
-                showCredentials();
-            },
-            true
-        );
+        // document.querySelector('#showCredentials').addEventListener(
+        //     'click',
+        //     () => {
+        //         showCredentials();
+        //     },
+        //     true
+        // );
     }
 }
 
@@ -57,6 +57,7 @@ async function storeCredentials(creds) {
     popupInit();
 }
 
+// eslint-disable-next-line no-unused-vars
 async function showCredentials() {
     document.body.style.height = '100px';
     const credManager = document.querySelector('#credential_manager');
