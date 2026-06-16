@@ -92,6 +92,7 @@ function addListenerToAutoFill(creds) {
 
 async function loginHandlerInit() {
     console.log('[Login Handler] Script Injected');
+    window.isLoginHelperInjected = true;
     const creds = await getStoredCredentials();
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
@@ -103,9 +104,12 @@ async function loginHandlerInit() {
 }
 
 (() => {
+    if (window.isLoginHelperInjected === undefined)
+        window.isLoginHelperInjected = false;
     if (
-        !window.location.href.includes('/pwd') &&
-        !window.location.href.includes('/login')
+        window.isLoginHelperInjected ||
+        (!window.location.href.includes('/pwd') &&
+            !window.location.href.includes('/login'))
     )
         return;
     loginHandlerInit();
