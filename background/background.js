@@ -36,6 +36,35 @@ chrome.webRequest.onCompleted.addListener(
     { urls: ['*://api.examly.io/api/*'] }
 );
 
+async function sendRqBodyToPatcher(reqBody) {
+    console.log('[background] [Send Body] Body: ', reqBody);
+    const tabIds = await getTabIds();
+    console.log('[background] [Send Body] Tab Ids: ', tabIds);
+    for (const id of tabIds) {
+        chrome.tabs.sendMessage(
+            id,
+            {
+                action: "send_patched_request",
+                data: reqBody
+            },
+        )
+    }
+}
+
+chrome.webRequest.onBeforeRequest.addListener(
+    (details) => {
+        console.log("[background] [Before Request]:", details);
+        if (details.requestBody?.raw?.[0]?.bytes) {
+            const text = new TextDecoder().decode(
+                details.requestBody.raw[0].bytes
+            );
+            sendRqBodyToPatcher(text);
+        }
+    },
+    { urls: ['*://api.examly.io/api/*/updateDurationSpent'] },
+    ["requestBody"]
+);
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log(`[background] message: ${JSON.stringify(message)}`);
     console.log(`[background] sender: ${JSON.stringify(sender)}`);
