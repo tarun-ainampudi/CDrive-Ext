@@ -1,31 +1,8 @@
-function checkForTabsAndReturnIds(tabs) {
-    const filteredTabs = tabs.filter((tab) => {
-        return (
-            tab.url !== undefined &&
-            (tab.url.includes('cdc.vit.ac.in') || tab.url.includes('examly.io'))
-        );
-    });
-    if (filteredTabs.length === 1) {
-        return [filteredTabs[0].id];
-    } else if (filteredTabs.length > 1) {
-        const secondFilter = filteredTabs.filter((tab) => {
-            return (
-                tab.url.includes('/dashboard') ||
-                tab.url.includes('/login') ||
-                tab.url.includes('/mycourses')
-            );
-        });
-        if (secondFilter.length !== 0) return secondFilter.map((tab) => tab.id);
-        return filteredTabs.map((tab) => tab.id);
-    }
-    return [];
-}
-
-async function getTabIdsForLoginHandler() {
+async function getTabIds() {
     const tabs = await chrome.tabs.query({
-        active: true,
+        url: ['*://cdc.vit.ac.in/*', '*://vitplacement905.examly.io/*'],
     });
-    return checkForTabsAndReturnIds(tabs);
+    return tabs.map((tab) => tab.id);
 }
 
 async function injectLoginHandler(tabIndex) {
@@ -33,7 +10,7 @@ async function injectLoginHandler(tabIndex) {
     if (tabIndex !== -1) {
         tabIds = [tabIndex];
     } else {
-        tabIds = await getTabIdsForLoginHandler();
+        tabIds = await getTabIds();
     }
     console.log('[Inject Login Handler] Tab Ids: ', tabIds);
     for (const id of tabIds) {

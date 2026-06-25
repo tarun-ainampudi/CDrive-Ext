@@ -28,7 +28,8 @@
   "permissions": [
     "storage",
     "webRequest",
-    "scripting"
+    "scripting",
+    "tabs"
   ],
   "host_permissions": [
     "*://cdc.vit.ac.in/*",

@@ -40,5 +40,5 @@ for (const question of questions) {
     solvedKey.forEach((item) => {
         const bool = checkMatchBasedOnIncludes(question, item.question);
         console.log(`[Debug] Bool: ${bool}`);
-    })
+    });
 }
