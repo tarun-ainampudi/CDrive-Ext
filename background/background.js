@@ -84,5 +84,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 sendResponse(null);
             });
     }
+    if (message.action === 'inject_watch_helper') {
+        chrome.scripting
+            .executeScript({
+                target: { tabId: sender.tab.id },
+                world: 'MAIN',
+                files: ['content_scripts/modules/runtime/watch_helper.js'],
+            })
+            .then(() => {
+                console.log('Watch Helper Injected');
+                sendResponse('Injected');
+            })
+            .catch((err) => {
+                console.log(`[background] Failed to inject watch_helper: ${err}`);
+                sendResponse(null);
+            });
+    }
     return true;
 });

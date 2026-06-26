@@ -1,25 +1,34 @@
 window.courseCompletionTracker = {}
 window.isBreak = false;
+let isWatchHelperInjected = false;
+
 
 function getCourseName() {
     const name = document.getElementById("courseNameID").innerText;
     return name;
 }
 
-function playVideoIfPossible() {
-    const ytEle = document.querySelector(".youtube");
-    const vpEle = document.querySelector(".vp-video");
-    if (ytEle !== null) {
-        ytEle.click();
+async function injectWatchHelper() {
+    if (!isWatchHelperInjected) {
+        const msg = await chrome.runtime.sendMessage({
+            action: 'inject_watch_helper',
+        });
+        if (msg === 'Injected') {
+            console.log(`[Watch] watch_helper injected`);
+            isWatchHelperInjected = true;
+            return;
+        }
+        console.log(`[Watch] [Debug] runtime inject response: ${msg}`);
         return;
     }
-    if (vpEle !== null) {
-        setTimeout(() => {
-            console.log("[Watch] [Debug] Vemo Player Clicked");
-            vpEle.click();
-        }, 10000)
-        return;
-    }
+    console.log(`[Watch] watch_helper already injected`);
+}
+
+async function playVideoIfPossible() {
+    await injectWatchHelper();
+    window.postMessage({
+        action: 'play_video',
+    });
 }
 
 function isCourseToBeWatched() {
@@ -141,6 +150,7 @@ async function sendPutReq(bodyStr) {
             body: bodyStr,
         });
         console.log(`[Watch] [Debug] Status Code: ${res.status}`);
+        selectNextWatchableEle();
     } catch (err) {
         console.error(
             `Error sending patched request :`,
@@ -193,7 +203,7 @@ async function sendPatchedRequest(reqBodyString) {
 
 chrome.runtime.onMessage.addListener(
     (message, sender, sendResponse) => {
-        if (message.action = "send_patched_request") {
+        if (message.action === "send_patched_request") {
             sendPatchedRequest(message.data);
             return "ok";
         }
