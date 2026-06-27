@@ -88,7 +88,7 @@ function getTotalTime() {
             return timeParts[1].trim() + ":" + timeParts[2].trim();
         }
     }
-    return ""
+    return "10:00"
 }
 
 function getTimeSpent() {
@@ -128,7 +128,7 @@ function encryptPayload(payload) {
     return { data };
 }
 
-async function sendPutReq(bodyStr) {
+async function sendPutReq(bodyStr, url) {
     const userAgentData = navigator.userAgentData;
     const brands = userAgentData.brands
         .map(b => `"${b.brand}";v="${b.version}"`)
@@ -144,12 +144,18 @@ async function sendPutReq(bodyStr) {
         "user-agent": navigator.userAgent
     };
     try {
-        const res = await fetch("https://api.examly.io/api/studentcontent/updateDurationSpent", {
+        const res = await fetch(url, {
             method: "PUT",
             headers,
             body: bodyStr,
         });
         console.log(`[Watch] [Debug] Status Code: ${res.status}`);
+        const resObj = await res.json();
+        if (resObj['data'] === undefined) {
+            console.log(`[Watch] [Debug] response: ${JSON.stringify(resObj)}`);
+        } else {
+            console.log(`[Watch] [Debug] response: ${resObj['data']['message']}`);
+        }
         selectNextWatchableEle();
     } catch (err) {
         console.error(
@@ -166,7 +172,11 @@ function removeBreak() {
     }, 5000);
 }
 
-async function sendPatchedRequest(reqBodyString) {
+async function sendPatchedRequest(reqBodyString, reqUrl) {
+    if (!location.href.includes("/mycourses/details")) {
+        console.log(`[Watch] [Debug] Not in /mycourses/details`);
+        return;
+    }
     if (window.isBreak) {
         console.log(`[Watch] [Debug] isBreak: ${window.isBreak} -> Ignoring Duplicate Rq`);
         return;
@@ -198,13 +208,13 @@ async function sendPatchedRequest(reqBodyString) {
     console.log(`[Watch] [Debug] patchedJSON: ${JSON.stringify(orgBody)}`);
     const patchedBody = encryptPayload(orgBody);
     const patchedRqStr = JSON.stringify(patchedBody);
-    sendPutReq(patchedRqStr);
+    sendPutReq(patchedRqStr, reqUrl);
 }
 
 chrome.runtime.onMessage.addListener(
     (message, sender, sendResponse) => {
         if (message.action === "send_patched_request") {
-            sendPatchedRequest(message.data);
+            sendPatchedRequest(message.data, message.url);
             return "ok";
         }
         return "nok";

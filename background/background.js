@@ -36,7 +36,7 @@ chrome.webRequest.onCompleted.addListener(
     { urls: ['*://api.examly.io/api/*'] }
 );
 
-async function sendRqBodyToPatcher(reqBody) {
+async function sendRqBodyToPatcher(reqBody,url) {
     console.log('[background] [Send Body] Body: ', reqBody);
     const tabIds = await getTabIds();
     console.log('[background] [Send Body] Tab Ids: ', tabIds);
@@ -45,7 +45,8 @@ async function sendRqBodyToPatcher(reqBody) {
             id,
             {
                 action: "send_patched_request",
-                data: reqBody
+                data: reqBody,
+                url
             },
         )
     }
@@ -58,7 +59,7 @@ chrome.webRequest.onBeforeRequest.addListener(
             const text = new TextDecoder().decode(
                 details.requestBody.raw[0].bytes
             );
-            sendRqBodyToPatcher(text);
+            sendRqBodyToPatcher(text,details.url);
         }
     },
     { urls: ['*://api.examly.io/api/*/updateDurationSpent'] },
