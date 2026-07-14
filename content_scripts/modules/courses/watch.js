@@ -1,7 +1,7 @@
 window.courseCompletionTracker = {}
 window.isBreak = false;
 let isWatchHelperInjected = false;
-
+const videoDataSymKey = "89wZc3csuXMuqxJ/BY86XA==";
 
 function getCourseName() {
     const name = document.getElementById("courseNameID").innerText;
@@ -112,9 +112,13 @@ function getTimeDiff() {
     return totalTime - spentTime;
 }
 
-function decryptPayload(encPayloadData) {
-    const key = "89wZc3csuXMuqxJ/BY86XA==";
-    const bytes = CryptoJS.AES.decrypt(encPayloadData, key);
+function decryptPayload(encPayload, key) {
+    const parsedPayload = JSON.parse(encPayload);
+    if(parsedPayload['data'] === undefined) {
+        console.log("[Watch] [Error] Payload Doesn't Contain Data to Decrypt");
+        return null;
+    }
+    const bytes = CryptoJS.AES.decrypt(parsedPayload['data'], key);
     const decPayloadData = bytes.toString(CryptoJS.enc.Utf8);
     if (!decPayloadData) {
         console.log("[Watch] [Error] Failed to decrypt payload");
@@ -122,8 +126,7 @@ function decryptPayload(encPayloadData) {
     return JSON.parse(decPayloadData);
 }
 
-function encryptPayload(payload) {
-    const key = "89wZc3csuXMuqxJ/BY86XA==";
+function encryptPayload(payload, key) {
     const data = CryptoJS.AES.encrypt(JSON.stringify(payload), key).toString();
     return { data };
 }
@@ -189,8 +192,11 @@ async function sendPatchedRequest(reqBodyString, reqUrl) {
         selectNextWatchableEle();
         return;
     }
-    const reqBody = JSON.parse(reqBodyString);
-    const orgBody = decryptPayload(reqBody['data']);
+    const orgBody = decryptPayload(reqBodyString, videoDataSymKey);
+    if(orgBody === null){
+        console.log(`[Watch] [Debug] Req Body Decryption Failed`);
+        return;
+    }
     const contentId = orgBody['content_id'];
     if (window.courseCompletionTracker[contentId] !== undefined) {
         console.log(`[Watch] [Debug] contentId: ${contentId} Already Completed`);
@@ -206,7 +212,7 @@ async function sendPatchedRequest(reqBodyString, reqUrl) {
     window.courseCompletionTracker[contentId] = 0;
     orgBody['duration_spent'] = timeDiff.toString();
     console.log(`[Watch] [Debug] patchedJSON: ${JSON.stringify(orgBody)}`);
-    const patchedBody = encryptPayload(orgBody);
+    const patchedBody = encryptPayload(orgBody, videoDataSymKey);
     const patchedRqStr = JSON.stringify(patchedBody);
     sendPutReq(patchedRqStr, reqUrl);
 }
