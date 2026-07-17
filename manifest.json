@@ -1,7 +1,7 @@
 {
   "name": "Ice",
   "description": "Ice is melting.",
-  "version": "1.0",
+  "version": "2.0",
   "manifest_version": 3,
   "icons": {
     "16": "assets/icons/ice-16x16.png",
@@ -47,7 +47,9 @@
         "content_scripts/modules/cod/test_page.js",
         "content_scripts/modules/cod/result_page.js",
         "content_scripts/modules/courses/watch.js",
-        "content_scripts/modules/helper/crypto-js.js"
+        "content_scripts/modules/helper/crypto-js.js",
+        "content_scripts/modules/runtime/req_watcher.js",
+        "content_scripts/default.js"
       ],
       "matches": [
         "*://cdc.vit.ac.in/*",

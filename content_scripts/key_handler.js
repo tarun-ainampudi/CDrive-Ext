@@ -1,4 +1,5 @@
-function allowCopyAndPaste(e) {
+function eventBlocker(e) {
+    e.preventDefault();
     e.stopImmediatePropagation();
     return true;
 }
@@ -12,12 +13,57 @@ function blockEvents() {
         'webkitfullscreenchange',
         'mozfullscreenchange',
         'MSFullscreenChange',
+        'visibilitychange',
+        'webkitvisibilitychange',
+        'mozvisibilitychange',
+        'msvisibilitychange',
+        'blur',
+        'focus',
+        'beforeunload',
+        'unload',
+        'pagehide',
+        'pageshow',
+        'pagereveal'
     ].forEach((evt) => {
-        document.addEventListener(evt, allowCopyAndPaste, true);
+        document.addEventListener(evt, eventBlocker, true);
+        window.addEventListener(evt, eventBlocker, true);
     });
+
+    try {
+        Object.defineProperty(document, 'hidden', {
+            get: function () {
+                return false;
+            }
+        });
+    } catch (e) {
+        console.log('Failed to override document.hidden:', e);
+    }
+
+    try {
+        Object.defineProperty(document, 'visibilityState', {
+            get: function () {
+                return 'visible';
+            }
+        });
+    } catch (e) {
+        console.log('Failed to override document.visibilityState:', e);
+    }
+
+    var originalAddEventListener = EventTarget.prototype.addEventListener;
+    EventTarget.prototype.addEventListener = function (type, listener, options) {
+        if (type === 'visibilitychange' || type === 'blur' || type === 'focus') {
+            return;
+        }
+        originalAddEventListener.call(this, type, listener, options);
+    };
 }
 
 async function answerCurrentPageTest() {
+    const secInfo = getSectionInfo();
+    if (secInfo.length > 1) {
+        answerCurrentQuestion();
+        return;
+    }
     const testInfo = getTestInfo();
     const testType = getTestType();
     const keys = Object.keys(testInfo);
@@ -26,17 +72,13 @@ async function answerCurrentPageTest() {
         return;
     }
     if (testType === 'Multi Choice Type Question') {
-        const answersStatus = await answerMcqs(testInfo['Test Name']);
-        blockEvents();
-        alert(answersStatus);
-        console.log(`[Key Handler] MCQ Answering Status: ${answersStatus}`);
+        answerCurrentQuestion();
     } else if (
         testType === 'Single File Programming Question' ||
         testType.toLowerCase().includes('program') ||
         testType.toLowerCase().includes('cod')
     ) {
         const answersStatus = await answerCodes(testInfo['Test Name']);
-        blockEvents();
         alert(answersStatus);
         console.log(`[Key Handler] COD Answering Status: ${answersStatus}`);
     }
@@ -85,7 +127,7 @@ function keydownHandler() {
             const ctrlKey = e.ctrlKey || e.metaKey;
             if (e.key === 'F9') {
                 e.preventDefault();
-                blockEvents();
+                answerMcqDefault();
             }
             if (e.key === 'F8') {
                 e.preventDefault();
@@ -112,3 +154,4 @@ function keydownHandler() {
     );
 }
 keydownHandler();
+blockEvents();

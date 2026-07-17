@@ -36,7 +36,7 @@ chrome.webRequest.onCompleted.addListener(
     { urls: ['*://api.examly.io/api/*'] }
 );
 
-async function sendRqBodyToPatcher(reqBody,url) {
+async function sendRqBodyToPatcher(reqBody, url) {
     console.log('[background] [Send Body] Body: ', reqBody);
     const tabIds = await getTabIds();
     console.log('[background] [Send Body] Tab Ids: ', tabIds);
@@ -59,7 +59,7 @@ chrome.webRequest.onBeforeRequest.addListener(
             const text = new TextDecoder().decode(
                 details.requestBody.raw[0].bytes
             );
-            sendRqBodyToPatcher(text,details.url);
+            sendRqBodyToPatcher(text, details.url);
         }
     },
     { urls: ['*://api.examly.io/api/*/updateDurationSpent'] },
@@ -98,6 +98,22 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             })
             .catch((err) => {
                 console.log(`[background] Failed to inject watch_helper: ${err}`);
+                sendResponse(null);
+            });
+    }
+    if (message.action === 'inject_req_watcher') {
+        chrome.scripting
+            .executeScript({
+                target: { tabId: sender.tab.id },
+                world: 'MAIN',
+                files: ['content_scripts/modules/runtime/req_watcher.js'],
+            })
+            .then(() => {
+                console.log('Request Watcher Injected');
+                sendResponse('Injected');
+            })
+            .catch((err) => {
+                console.log(`[background] Failed to inject req_watcher: ${err}`);
                 sendResponse(null);
             });
     }
