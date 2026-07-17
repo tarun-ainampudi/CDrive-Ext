@@ -41,20 +41,17 @@ async function sendRqBodyToPatcher(reqBody, url) {
     const tabIds = await getTabIds();
     console.log('[background] [Send Body] Tab Ids: ', tabIds);
     for (const id of tabIds) {
-        chrome.tabs.sendMessage(
-            id,
-            {
-                action: "send_patched_request",
-                data: reqBody,
-                url
-            },
-        )
+        chrome.tabs.sendMessage(id, {
+            action: 'send_patched_request',
+            data: reqBody,
+            url,
+        });
     }
 }
 
 chrome.webRequest.onBeforeRequest.addListener(
     (details) => {
-        console.log("[background] [Before Request]:", details);
+        console.log('[background] [Before Request]:', details);
         if (details.requestBody?.raw?.[0]?.bytes) {
             const text = new TextDecoder().decode(
                 details.requestBody.raw[0].bytes
@@ -63,7 +60,7 @@ chrome.webRequest.onBeforeRequest.addListener(
         }
     },
     { urls: ['*://api.examly.io/api/*/updateDurationSpent'] },
-    ["requestBody"]
+    ['requestBody']
 );
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -97,7 +94,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 sendResponse('Injected');
             })
             .catch((err) => {
-                console.log(`[background] Failed to inject watch_helper: ${err}`);
+                console.log(
+                    `[background] Failed to inject watch_helper: ${err}`
+                );
                 sendResponse(null);
             });
     }
@@ -113,7 +112,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 sendResponse('Injected');
             })
             .catch((err) => {
-                console.log(`[background] Failed to inject req_watcher: ${err}`);
+                console.log(
+                    `[background] Failed to inject req_watcher: ${err}`
+                );
                 sendResponse(null);
             });
     }

@@ -1,10 +1,10 @@
-window.courseCompletionTracker = {}
+window.courseCompletionTracker = {};
 window.isBreak = false;
 let isWatchHelperInjected = false;
-const videoDataSymKey = "89wZc3csuXMuqxJ/BY86XA==";
+const videoDataSymKey = '89wZc3csuXMuqxJ/BY86XA==';
 
 function getCourseName() {
-    const name = document.getElementById("courseNameID").innerText;
+    const name = document.getElementById('courseNameID').innerText;
     return name;
 }
 
@@ -32,10 +32,10 @@ async function playVideoIfPossible() {
 }
 
 function isCourseToBeWatched() {
-    const selectedEle = document.querySelector(".selectedAcd");
+    const selectedEle = document.querySelector('.selectedAcd');
     if (selectedEle !== null) {
         const text = selectedEle.innerText.toLowerCase();
-        if (text.includes("video") || text.includes("text")) {
+        if (text.includes('video') || text.includes('text')) {
             return true;
         }
     }
@@ -47,17 +47,17 @@ function expandAllSections() {
     if (daEle.length == 0) {
         return;
     }
-    daEle.forEach(ele => ele.click());
+    daEle.forEach((ele) => ele.click());
     daEle = document.querySelectorAll('img[alt="down-arrow"]');
     if (daEle.length != 0) {
-        daEle.forEach(ele => ele.click());
+        daEle.forEach((ele) => ele.click());
     }
 }
 
 function selectNextWatchableEle(count = 0) {
     expandAllSections();
-    const items = Array.from(document.querySelectorAll(".modonhover"));
-    const current = document.querySelector(".selectedAcd");
+    const items = Array.from(document.querySelectorAll('.modonhover'));
+    const current = document.querySelector('.selectedAcd');
 
     if (items.length === 0) {
         return;
@@ -70,7 +70,7 @@ function selectNextWatchableEle(count = 0) {
         idx = (idx + 1) % items.length;
     }
 
-    items[idx].click()
+    items[idx].click();
 
     if (!isCourseToBeWatched() && count < items.length) {
         selectNextWatchableEle(count + 1);
@@ -80,26 +80,25 @@ function selectNextWatchableEle(count = 0) {
 }
 
 function getTotalTime() {
-    const selectedEle = document.querySelector(".selectedAcd");
+    const selectedEle = document.querySelector('.selectedAcd');
     if (selectedEle != null) {
-        const timeEle = selectedEle.innerText.split("\n")[1];
-        const timeParts = timeEle.split(":");
+        const timeEle = selectedEle.innerText.split('\n')[1];
+        const timeParts = timeEle.split(':');
         if (timeParts.length === 3) {
-            return timeParts[1].trim() + ":" + timeParts[2].trim();
+            return timeParts[1].trim() + ':' + timeParts[2].trim();
         }
     }
-    return "10:00"
+    return '10:00';
 }
 
 function getTimeSpent() {
-    const timeSpentEle = document.getElementById("timeSpentCountID");
-    if (timeSpentEle !== null)
-        return timeSpentEle.innerText.split(" ")[0];
-    return "";
+    const timeSpentEle = document.getElementById('timeSpentCountID');
+    if (timeSpentEle !== null) return timeSpentEle.innerText.split(' ')[0];
+    return '';
 }
 
 function toSeconds(time) {
-    const parts = time.split(":");
+    const parts = time.split(':');
     if (parts.length === 2) {
         return Number(parts[0] * 60) + Number(parts[1]);
     }
@@ -114,14 +113,14 @@ function getTimeDiff() {
 
 function decryptPayload(encPayload, key) {
     const parsedPayload = JSON.parse(encPayload);
-    if(parsedPayload['data'] === undefined) {
+    if (parsedPayload['data'] === undefined) {
         console.log("[Watch] [Error] Payload Doesn't Contain Data to Decrypt");
         return null;
     }
     const bytes = CryptoJS.AES.decrypt(parsedPayload['data'], key);
     const decPayloadData = bytes.toString(CryptoJS.enc.Utf8);
     if (!decPayloadData) {
-        console.log("[Watch] [Error] Failed to decrypt payload");
+        console.log('[Watch] [Error] Failed to decrypt payload');
     }
     return JSON.parse(decPayloadData);
 }
@@ -134,21 +133,21 @@ function encryptPayload(payload, key) {
 async function sendPutReq(bodyStr, url) {
     const userAgentData = navigator.userAgentData;
     const brands = userAgentData.brands
-        .map(b => `"${b.brand}";v="${b.version}"`)
-        .join(", ");
+        .map((b) => `"${b.brand}";v="${b.version}"`)
+        .join(', ');
     const headers = {
-        "accept": "application/json, text/plain, */*",
-        "authorization": JSON.parse(localStorage.token)['token'],
-        "content-type": "application/json",
-        "referer": location.origin,
-        "sec-ch-ua": brands,
-        "sec-ch-ua-mobile": userAgentData.mobile ? "?1" : "?0",
-        "sec-ch-ua-platform": `"${userAgentData.platform}"`,
-        "user-agent": navigator.userAgent
+        accept: 'application/json, text/plain, */*',
+        authorization: JSON.parse(localStorage.token)['token'],
+        'content-type': 'application/json',
+        referer: location.origin,
+        'sec-ch-ua': brands,
+        'sec-ch-ua-mobile': userAgentData.mobile ? '?1' : '?0',
+        'sec-ch-ua-platform': `"${userAgentData.platform}"`,
+        'user-agent': navigator.userAgent,
     };
     try {
         const res = await fetch(url, {
-            method: "PUT",
+            method: 'PUT',
             headers,
             body: bodyStr,
         });
@@ -157,14 +156,13 @@ async function sendPutReq(bodyStr, url) {
         if (resObj['data'] === undefined) {
             console.log(`[Watch] [Debug] response: ${JSON.stringify(resObj)}`);
         } else {
-            console.log(`[Watch] [Debug] response: ${resObj['data']['message']}`);
+            console.log(
+                `[Watch] [Debug] response: ${resObj['data']['message']}`
+            );
         }
         selectNextWatchableEle();
     } catch (err) {
-        console.error(
-            `Error sending patched request :`,
-            err
-        );
+        console.error(`Error sending patched request :`, err);
     }
 }
 
@@ -176,12 +174,14 @@ function removeBreak() {
 }
 
 async function sendPatchedRequest(reqBodyString, reqUrl) {
-    if (!location.href.includes("/mycourses/details")) {
+    if (!location.href.includes('/mycourses/details')) {
         console.log(`[Watch] [Debug] Not in /mycourses/details`);
         return;
     }
     if (window.isBreak) {
-        console.log(`[Watch] [Debug] isBreak: ${window.isBreak} -> Ignoring Duplicate Rq`);
+        console.log(
+            `[Watch] [Debug] isBreak: ${window.isBreak} -> Ignoring Duplicate Rq`
+        );
         return;
     } else {
         window.isBreak = true;
@@ -193,13 +193,15 @@ async function sendPatchedRequest(reqBodyString, reqUrl) {
         return;
     }
     const orgBody = decryptPayload(reqBodyString, videoDataSymKey);
-    if(orgBody === null){
+    if (orgBody === null) {
         console.log(`[Watch] [Debug] Req Body Decryption Failed`);
         return;
     }
     const contentId = orgBody['content_id'];
     if (window.courseCompletionTracker[contentId] !== undefined) {
-        console.log(`[Watch] [Debug] contentId: ${contentId} Already Completed`);
+        console.log(
+            `[Watch] [Debug] contentId: ${contentId} Already Completed`
+        );
         selectNextWatchableEle();
         return;
     }
@@ -217,12 +219,10 @@ async function sendPatchedRequest(reqBodyString, reqUrl) {
     sendPutReq(patchedRqStr, reqUrl);
 }
 
-chrome.runtime.onMessage.addListener(
-    (message, sender, sendResponse) => {
-        if (message.action === "send_patched_request") {
-            sendPatchedRequest(message.data, message.url);
-            return "ok";
-        }
-        return "nok";
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'send_patched_request') {
+        sendPatchedRequest(message.data, message.url);
+        return 'ok';
     }
-)
+    return 'nok';
+});

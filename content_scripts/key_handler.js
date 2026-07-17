@@ -23,7 +23,7 @@ function blockEvents() {
         'unload',
         'pagehide',
         'pageshow',
-        'pagereveal'
+        'pagereveal',
     ].forEach((evt) => {
         document.addEventListener(evt, eventBlocker, true);
         window.addEventListener(evt, eventBlocker, true);
@@ -33,7 +33,7 @@ function blockEvents() {
         Object.defineProperty(document, 'hidden', {
             get: function () {
                 return false;
-            }
+            },
         });
     } catch (e) {
         console.log('Failed to override document.hidden:', e);
@@ -43,15 +43,23 @@ function blockEvents() {
         Object.defineProperty(document, 'visibilityState', {
             get: function () {
                 return 'visible';
-            }
+            },
         });
     } catch (e) {
         console.log('Failed to override document.visibilityState:', e);
     }
 
     var originalAddEventListener = EventTarget.prototype.addEventListener;
-    EventTarget.prototype.addEventListener = function (type, listener, options) {
-        if (type === 'visibilitychange' || type === 'blur' || type === 'focus') {
+    EventTarget.prototype.addEventListener = function (
+        type,
+        listener,
+        options
+    ) {
+        if (
+            type === 'visibilitychange' ||
+            type === 'blur' ||
+            type === 'focus'
+        ) {
             return;
         }
         originalAddEventListener.call(this, type, listener, options);
