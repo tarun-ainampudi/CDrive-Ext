@@ -89,7 +89,6 @@ function answerCurrentQuestion() {
         console.log("[Default] [Debug] Can't Get Section Name Div");
         return;
     }
-    const secName = secNameDiv.innerText.split('\n')[0];
     const header = qHeader.textContent;
     const secIndex =
         parseInt(secNameDiv.textContent.match(/Section (\d+)\/\d+/)[1]) - 1;
@@ -113,20 +112,21 @@ function answerCurrentQuestion() {
     }
 }
 
+// eslint-disable-next-line no-unused-vars
 async function answerMcqDefault() {
     isDefaultMcqSolverRunning = true;
 
-    let queArray = [
+    const queArray = [
         ...document.querySelectorAll("div[aria-labelledby='each-question']"),
     ];
-    let currSelectedQue = document.querySelector(
+    const currSelectedQue = document.querySelector(
         'div[aria-labelledby^="currentQuestion"]'
     );
 
     let currentIndex = 0;
 
     if (currSelectedQue) {
-        let index = queArray.indexOf(currSelectedQue);
+        const index = queArray.indexOf(currSelectedQue);
         if (index !== -1) currentIndex = index;
     }
 
