@@ -7,9 +7,6 @@ function eventBlocker(e) {
 function blockEvents() {
     [
         'fullscreenchange',
-        'copy',
-        'paste',
-        'onpaste',
         'webkitfullscreenchange',
         'mozfullscreenchange',
         'MSFullscreenChange',
@@ -64,6 +61,19 @@ function blockEvents() {
         }
         originalAddEventListener.call(this, type, listener, options);
     };
+}
+
+function allowCopyPaste() {
+    [
+        'copy',
+        'paste',
+        'onpaste',
+    ].forEach((evt) => {
+        document.addEventListener(evt, (e) => {
+            e.stopImmediatePropagation();
+            return true;
+        }, true);
+    });
 }
 
 async function answerCurrentPageTest() {
@@ -163,3 +173,4 @@ function keydownHandler() {
 }
 keydownHandler();
 blockEvents();
+allowCopyPaste();
