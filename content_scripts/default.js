@@ -2,6 +2,7 @@ let isReqWatcherInjected = false;
 let decryptedKeyData = [];
 let isDefaultMcqSolverRunning = false;
 let isDefaultHelperInjected = false;
+let defaultAnswerSlowly = false;
 
 function expandSectionDropDown() {
     const dropDown = document.querySelector('img[src*=arrow_down]');
@@ -111,7 +112,7 @@ function answerCurrentQuestion() {
     if (num && !isNaN(secIndex)) {
         const opIndex =
             decryptedKeyData.at(-1)[
-                parseInt(num) + sectionsInfo[secIndex].startQIndex - 1
+            parseInt(num) + sectionsInfo[secIndex].startQIndex - 1
             ];
         const opDiv = document.querySelector(
             '#tt-option-' + opIndex + ' > label > span.checkmark1'
@@ -128,13 +129,11 @@ function answerCurrentQuestion() {
 
 // eslint-disable-next-line no-unused-vars
 async function answerMcqDefault() {
-    injectDefaultHelper();
-
     if (isDefaultMcqSolverRunning) {
         document.dispatchEvent(
             new KeyboardEvent('keydown', { key: 'Backspace' })
         );
-        await sleep(2000);
+        await sleep(1000);
     }
 
     isDefaultMcqSolverRunning = true;
@@ -157,21 +156,27 @@ async function answerMcqDefault() {
         '[Default] Answering Questions. Press backspace to stop the script.'
     );
 
-    for (
-        let i = currentIndex;
-        i < queArray.length && isDefaultMcqSolverRunning;
-        i++
-    ) {
-        queArray[i].querySelector('div').click();
-        if (document.querySelector("input[type='radio']:checked") === null) {
-            answerCurrentQuestion();
-            console.log(`[Default] Answered Question: ${i + 1}`);
-        }
-    }
+    if (!defaultAnswerSlowly) {
+        injectDefaultHelper();
 
-    console.log(
-        '[Default] All questions answered. Passing time press backspace to stop the script.'
-    );
+        for (
+            let i = currentIndex;
+            i < queArray.length && isDefaultMcqSolverRunning;
+            i++
+        ) {
+            queArray[i].querySelector('div').click();
+            if (
+                document.querySelector("input[type='radio']:checked") === null
+            ) {
+                answerCurrentQuestion();
+                console.log(`[Default] Answered Question: ${i + 1}`);
+            }
+        }
+
+        console.log(
+            '[Default] All questions answered. Passing time press backspace to stop the script.'
+        );
+    }
 
     for (let i = 0; i < queArray.length && isDefaultMcqSolverRunning; i++) {
         const passTime = Math.floor(Math.random() * 50000) + 30000;
@@ -180,10 +185,15 @@ async function answerMcqDefault() {
         );
         queArray[i].querySelector('div').click();
         await sleep(passTime - 3000);
-        window.postMessage({
-            action: 'mcq-scorrect-option-click',
-        });
-        await sleep(3000);
+        if (document.querySelector("input[type='radio']:checked") === null) {
+            answerCurrentQuestion();
+            console.log(`[Default] Answered Question: ${i + 1}`);
+        } else {
+            window.postMessage({
+                action: 'mcq-scorrect-option-click',
+            });
+        }
+        if (isDefaultMcqSolverRunning) await sleep(3000);
     }
 
     isDefaultMcqSolverRunning = false;
@@ -199,3 +209,24 @@ window.addEventListener('message', (event) => {
         decryptedKeyData = [...decryptedKeyData, ...data.keyData];
     }
 });
+chrome.runtime.onMessage.addListener((msg) => {
+    if (msg.action === 'update_answer_slowly') {
+        defaultAnswerSlowly = msg.data;
+        console.log(
+            `[Default] [Debug] defaultAnswerSlowly: ${defaultAnswerSlowly}`
+        );
+    }
+});
+(async () => {
+    const answerSlowly = await chrome.storage.local.get(
+        'default_answer_slowly'
+    );
+    if (answerSlowly['default_answer_slowly'] !== undefined) {
+        console.log(
+            `[Default] [Debug] defaultAnswerSlowly: ${answerSlowly['default_answer_slowly']}`
+        );
+        defaultAnswerSlowly = answerSlowly['default_answer_slowly'];
+        return;
+    }
+    await chrome.storage.local.set({ default_answer_slowly: false });
+})();

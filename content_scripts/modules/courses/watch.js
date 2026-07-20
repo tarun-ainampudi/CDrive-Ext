@@ -219,7 +219,7 @@ async function sendPatchedRequest(reqBodyString, reqUrl) {
     sendPutReq(patchedRqStr, reqUrl);
 }
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message) => {
     if (message.action === 'send_patched_request') {
         sendPatchedRequest(message.data, message.url);
         return 'ok';

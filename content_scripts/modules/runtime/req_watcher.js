@@ -84,9 +84,9 @@ window.addEventListener(
         xhr.addEventListener('readystatechange', function () {
             if (xhr.readyState === 4) {
                 const responseUrl = xhr.responseURL;
-                console.log(
+                /* console.log(
                     `[Req Watcher] [Debug] Response URL: ${responseUrl}`
-                );
+                ); */
                 if (
                     responseUrl.includes(
                         'https://api.examly.io/api/sEKMRyOJKjIzZbUa'

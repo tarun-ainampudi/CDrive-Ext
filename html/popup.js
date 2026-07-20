@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function popupInit() {
     const creds = await getStoredCredentials();
+    const isCheckedPreviosly = await chrome.storage.local.get(
+        'default_answer_slowly'
+    );
     const credManager = document.querySelector('#credential_manager');
     if (creds !== null) {
         const removeBtn = `<button id="removeStoredCredentials">Remove Credentials</button>`;
@@ -29,6 +32,29 @@ async function popupInit() {
         //     },
         //     true
         // );
+    }
+    const defHandler = document.querySelector('#defaultHandler');
+    if (defHandler !== null) {
+        if (isCheckedPreviosly['default_answer_slowly'] !== undefined) {
+            defHandler.checked = isCheckedPreviosly['default_answer_slowly'];
+        } else {
+            chrome.storage.local.set({ default_answer_slowly: false });
+        }
+        defHandler.addEventListener('change', checkboxHandler, true);
+    }
+}
+
+async function checkboxHandler(evt) {
+    chrome.storage.local.set({ default_answer_slowly: evt.target.checked });
+    console.log(`[popup] default_answer_slowly: ${evt.target.checked}`);
+    const tabs = await chrome.tabs.query({
+        url: ['*://cdc.vit.ac.in/*', '*://*.examly.io/*'],
+    });
+    for (let i = 0; i < tabs.length; i++) {
+        chrome.tabs.sendMessage(tabs[i].id, {
+            action: 'update_answer_slowly',
+            data: evt.target.checked,
+        });
     }
 }
 

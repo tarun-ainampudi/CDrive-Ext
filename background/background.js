@@ -1,6 +1,6 @@
 async function getTabIds() {
     const tabs = await chrome.tabs.query({
-        url: ['*://cdc.vit.ac.in/*', '*://vitplacement905.examly.io/*'],
+        url: ['*://cdc.vit.ac.in/*', '*://*.examly.io/*'],
     });
     return tabs.map((tab) => tab.id);
 }
