@@ -1,5 +1,7 @@
 let isReqWatcherInjected = false;
 let decryptedKeyData = [];
+let isDefaultMcqSolverRunning = false;
+let isDefaultHelperInjected = false;
 
 function expandSectionDropDown() {
     const dropDown = document.querySelector('img[src*=arrow_down]');
@@ -40,6 +42,23 @@ function getSectionInfo() {
     return sectionInfo;
 }
 
+async function injectDefaultHelper() {
+    if (!isDefaultHelperInjected) {
+        isDefaultHelperInjected = true;
+        const msg = await chrome.runtime.sendMessage({
+            action: 'inject_default_helper',
+        });
+        if (msg === 'Injected') {
+            console.log(`[Default] default_helper injected`);
+            return;
+        }
+        isDefaultHelperInjected = false;
+        console.log(`[Default] [Debug] runtime inject response: ${msg}`);
+        return;
+    }
+    console.log(`[Default] default_helper already injected`);
+}
+
 async function injectReqWatcher() {
     if (!isReqWatcherInjected) {
         isReqWatcherInjected = true;
@@ -62,11 +81,6 @@ function answerCurrentQuestion() {
         console.log('[Default] [Debug] decryptedKeyData is empty');
         return;
     }
-
-    console.log(
-        `[Default] [Debug] decryptedKeyData: ${JSON.stringify(decryptedKeyData)}`
-    );
-
     const sectionsInfo = getSectionInfo();
     if (sectionsInfo.length === 0) {
         console.log(
@@ -97,7 +111,7 @@ function answerCurrentQuestion() {
     if (num && !isNaN(secIndex)) {
         const opIndex =
             decryptedKeyData.at(-1)[
-                parseInt(num) + sectionsInfo[secIndex].startQIndex - 1
+            parseInt(num) + sectionsInfo[secIndex].startQIndex - 1
             ];
         const opDiv = document.querySelector(
             '#tt-option-' + opIndex + ' > label > span.checkmark1'
@@ -114,6 +128,14 @@ function answerCurrentQuestion() {
 
 // eslint-disable-next-line no-unused-vars
 async function answerMcqDefault() {
+
+    injectDefaultHelper();
+
+    if (isDefaultMcqSolverRunning) {
+        document.dispatchEvent(new KeyboardEvent("keydown", { key: "Backspace" }));
+        await sleep(2000);
+    }
+
     isDefaultMcqSolverRunning = true;
 
     const queArray = [
@@ -156,7 +178,11 @@ async function answerMcqDefault() {
             `[Default] Passing ${Math.floor(passTime / 1000)} Seconds On Question: ${i + 1}`
         );
         queArray[i].querySelector('div').click();
-        await sleep(passTime);
+        await sleep(passTime - 3000);
+        window.postMessage({
+            action: 'mcq-scorrect-option-click',
+        });
+        await sleep(3000);
     }
 
     isDefaultMcqSolverRunning = false;

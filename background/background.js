@@ -66,57 +66,34 @@ chrome.webRequest.onBeforeRequest.addListener(
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log(`[background] message: ${JSON.stringify(message)}`);
     console.log(`[background] sender: ${JSON.stringify(sender)}`);
-    if (message.action === 'inject_ace_helper') {
-        chrome.scripting
-            .executeScript({
-                target: { tabId: sender.tab.id },
-                world: 'MAIN',
-                files: ['content_scripts/modules/runtime/ace_helper.js'],
-            })
-            .then(() => {
-                console.log('Ace Helper Injected');
-                sendResponse('Injected');
-            })
-            .catch((err) => {
-                console.log(`[background] Failed to inject ace_helper: ${err}`);
-                sendResponse(null);
-            });
+    if (message.action === undefined) {
+        console.log(`[background] [Debug] message.action is undefined`);
+        sendResponse('Not Injected');
+        return;
     }
-    if (message.action === 'inject_watch_helper') {
-        chrome.scripting
-            .executeScript({
-                target: { tabId: sender.tab.id },
-                world: 'MAIN',
-                files: ['content_scripts/modules/runtime/watch_helper.js'],
-            })
-            .then(() => {
-                console.log('Watch Helper Injected');
-                sendResponse('Injected');
-            })
-            .catch((err) => {
-                console.log(
-                    `[background] Failed to inject watch_helper: ${err}`
-                );
-                sendResponse(null);
-            });
+    const runtimeHelpers = ['inject_ace_helper', 'inject_watch_helper', 'inject_req_watcher', 'inject_default_helper'];
+    const runtimePath = 'content_scripts/modules/runtime/';
+    if (!runtimeHelpers.includes(message.action)) {
+        console.log(`[background] [Debug] ${message.action} is not in runtime helpers`);
+        sendResponse('Not Injected');
+        return;
     }
-    if (message.action === 'inject_req_watcher') {
-        chrome.scripting
-            .executeScript({
-                target: { tabId: sender.tab.id },
-                world: 'MAIN',
-                files: ['content_scripts/modules/runtime/req_watcher.js'],
-            })
-            .then(() => {
-                console.log('Request Watcher Injected');
-                sendResponse('Injected');
-            })
-            .catch((err) => {
-                console.log(
-                    `[background] Failed to inject req_watcher: ${err}`
-                );
-                sendResponse(null);
-            });
-    }
+    const fileName = message.action.replace('inject_', '') + '.js';
+    const filePath = runtimePath + fileName;
+    console.log(`[background] [Debug] filePath: ${filePath}`);
+    chrome.scripting
+        .executeScript({
+            target: { tabId: sender.tab.id },
+            world: 'MAIN',
+            files: [filePath],
+        })
+        .then(() => {
+            console.log(`[background] ${fileName} Injected`);
+            sendResponse('Injected');
+        })
+        .catch((err) => {
+            console.log(`[background] Failed to inject ${fileName}: ${err}`);
+            sendResponse('Not Injected');
+        });
     return true;
 });

@@ -25,7 +25,9 @@ function blockEvents() {
         document.addEventListener(evt, eventBlocker, true);
         window.addEventListener(evt, eventBlocker, true);
     });
+}
 
+function definePageHideNdFullScrnProps() {
     try {
         Object.defineProperty(document, 'hidden', {
             get: function () {
@@ -34,6 +36,17 @@ function blockEvents() {
         });
     } catch (e) {
         console.log('Failed to override document.hidden:', e);
+    }
+
+    try {
+        Object.defineProperty(document, 'fullscreenElement', {
+            get: function () {
+                return document.documentElement;
+            },
+            configurable: true
+        });
+    } catch (e) {
+        console.log('Failed to override document.fullscreenElement:', e);
     }
 
     try {
@@ -55,7 +68,8 @@ function blockEvents() {
         if (
             type === 'visibilitychange' ||
             type === 'blur' ||
-            type === 'focus'
+            type === 'focus' ||
+            type === 'fullscreenchange'
         ) {
             return;
         }
@@ -161,16 +175,30 @@ function keydownHandler() {
                 e.stopImmediatePropagation();
                 pasteClipboardByTyping();
             }
-            if (isTyperActive && e.key === 'Backspace') {
-                isTyperActive = false;
-                console.log(
-                    '[Key Handler] Backspace encountered stopping Typer'
-                );
+            if (e.key === 'Backspace') {
+                if (typeof cancelSleep === 'function') {
+                    console.log("[Key Handler] Backspace Encountered: cancelSleep");
+                    cancelSleep();
+                }
+                if (isTyperActive) {
+                    isTyperActive = false;
+                    console.log(
+                        '[Key Handler] Backspace encountered stopping Typer'
+                    );
+                }
+                if (isDefaultMcqSolverRunning) {
+                    isDefaultMcqSolverRunning = false;
+                    console.log(
+                        '[Key Handler] Backspace encountered stopping Default MCQ Solver'
+                    );
+                }
             }
         },
         true
     );
 }
+
 keydownHandler();
 blockEvents();
+definePageHideNdFullScrnProps();
 allowCopyPaste();

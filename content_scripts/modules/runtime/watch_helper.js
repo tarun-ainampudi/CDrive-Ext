@@ -7,6 +7,10 @@ function playVideo() {
             return;
         }
         const comp = ctx.find((v) => v && v.durationUpdate);
+        if (comp === undefined) {
+            console.log(`[Watch Helper] [Debug] comp === undefined`);
+            return;
+        }
         comp.durationUpdate.emit('play');
         console.log(
             `[Watch Helper] [Debug] Played Video with the help of __ngContext__`
