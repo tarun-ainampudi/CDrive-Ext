@@ -112,7 +112,7 @@ function answerCurrentQuestion() {
     if (num && !isNaN(secIndex)) {
         const opIndex =
             decryptedKeyData.at(-1)[
-            parseInt(num) + sectionsInfo[secIndex].startQIndex - 1
+                parseInt(num) + sectionsInfo[secIndex].startQIndex - 1
             ];
         const opDiv = document.querySelector(
             '#tt-option-' + opIndex + ' > label > span.checkmark1'
@@ -129,6 +129,8 @@ function answerCurrentQuestion() {
 
 // eslint-disable-next-line no-unused-vars
 async function answerMcqDefault() {
+    injectDefaultHelper();
+
     if (isDefaultMcqSolverRunning) {
         document.dispatchEvent(
             new KeyboardEvent('keydown', { key: 'Backspace' })
@@ -157,8 +159,6 @@ async function answerMcqDefault() {
     );
 
     if (!defaultAnswerSlowly) {
-        injectDefaultHelper();
-
         for (
             let i = currentIndex;
             i < queArray.length && isDefaultMcqSolverRunning;
@@ -178,7 +178,11 @@ async function answerMcqDefault() {
         );
     }
 
-    for (let i = 0; i < queArray.length && isDefaultMcqSolverRunning; i++) {
+    for (
+        let i = currentIndex;
+        i < queArray.length && isDefaultMcqSolverRunning;
+        i++
+    ) {
         const passTime = Math.floor(Math.random() * 50000) + 30000;
         console.log(
             `[Default] Passing ${Math.floor(passTime / 1000)} Seconds On Question: ${i + 1}`
@@ -192,6 +196,9 @@ async function answerMcqDefault() {
             window.postMessage({
                 action: 'mcq-scorrect-option-click',
             });
+            console.log(
+                `[Default] postMessage --> Already Answered Question: ${i + 1}`
+            );
         }
         if (isDefaultMcqSolverRunning) await sleep(3000);
     }

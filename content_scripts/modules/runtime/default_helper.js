@@ -33,7 +33,7 @@ window.addEventListener(
             data.action !== undefined &&
             data.action === 'mcq-scorrect-heart-beat'
         ) {
-            console.log(`[Default Helper] [Debug] action: heart-beat`);
+            console.log(`[Default Helper] [Debug] action: ${data.action}`);
             mcqSingleCrtEventEmitter('heart-beat');
             return;
         }
@@ -41,7 +41,7 @@ window.addEventListener(
             data.action !== undefined &&
             data.action === 'mcq-scorrect-option-click'
         ) {
-            console.log(`[Default Helper] [Debug] action: option-click`);
+            console.log(`[Default Helper] [Debug] action: ${data.action}`);
             mcqSingleCrtEventEmitter('option-click');
             return;
         }
