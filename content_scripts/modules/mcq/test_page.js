@@ -1,11 +1,12 @@
 // eslint-disable-next-line no-unused-vars
-const sleep = (ms) => new Promise(resolve => {
-    const timer = setTimeout(resolve, ms);
-    cancelSleep = () => {
-        clearTimeout(timer);
-        resolve();
-    }
-});
+const sleep = (ms) =>
+    new Promise((resolve) => {
+        const timer = setTimeout(resolve, ms);
+        cancelSleep = () => {
+            clearTimeout(timer);
+            resolve();
+        };
+    });
 
 function selectQuestion(questionSelector) {
     const question = questionSelector.querySelector('div');

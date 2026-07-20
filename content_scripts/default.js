@@ -111,7 +111,7 @@ function answerCurrentQuestion() {
     if (num && !isNaN(secIndex)) {
         const opIndex =
             decryptedKeyData.at(-1)[
-            parseInt(num) + sectionsInfo[secIndex].startQIndex - 1
+                parseInt(num) + sectionsInfo[secIndex].startQIndex - 1
             ];
         const opDiv = document.querySelector(
             '#tt-option-' + opIndex + ' > label > span.checkmark1'
@@ -128,11 +128,12 @@ function answerCurrentQuestion() {
 
 // eslint-disable-next-line no-unused-vars
 async function answerMcqDefault() {
-
     injectDefaultHelper();
 
     if (isDefaultMcqSolverRunning) {
-        document.dispatchEvent(new KeyboardEvent("keydown", { key: "Backspace" }));
+        document.dispatchEvent(
+            new KeyboardEvent('keydown', { key: 'Backspace' })
+        );
         await sleep(2000);
     }
 

@@ -1,5 +1,5 @@
 function mcqSingleCrtEventEmitter(evt) {
-    const mcqSingleCrtEle = document.querySelector("mcqsinglecorrect-answer");
+    const mcqSingleCrtEle = document.querySelector('mcqsinglecorrect-answer');
     if (mcqSingleCrtEle !== null) {
         const ctx = mcqSingleCrtEle.__ngContext__;
         if (ctx === undefined) {
@@ -12,31 +12,37 @@ function mcqSingleCrtEventEmitter(evt) {
             return;
         }
         comp.action.emit({
-            type: "event",
+            type: 'event',
             data: {
-                event_type: evt
-            }
+                event_type: evt,
+            },
         });
-        console.log(
-            `[Default Helper] [Debug] Emitted Event: ${evt}`
-        );
+        console.log(`[Default Helper] [Debug] Emitted Event: ${evt}`);
         return;
     }
-    console.log(`[Default Helper] [Debug] mcqSingleCrtEle not found to Emmit Event`);
+    console.log(
+        `[Default Helper] [Debug] mcqSingleCrtEle not found to Emmit Event`
+    );
 }
 
 window.addEventListener(
     'message',
     (event) => {
         const data = event.data;
-        if (data.action !== undefined && data.action === 'mcq-scorrect-heart-beat') {
+        if (
+            data.action !== undefined &&
+            data.action === 'mcq-scorrect-heart-beat'
+        ) {
             console.log(`[Default Helper] [Debug] action: heart-beat`);
-            mcqSingleCrtEventEmitter("heart-beat");
+            mcqSingleCrtEventEmitter('heart-beat');
             return;
         }
-        if (data.action !== undefined && data.action === 'mcq-scorrect-option-click') {
+        if (
+            data.action !== undefined &&
+            data.action === 'mcq-scorrect-option-click'
+        ) {
             console.log(`[Default Helper] [Debug] action: option-click`);
-            mcqSingleCrtEventEmitter("option-click");
+            mcqSingleCrtEventEmitter('option-click');
             return;
         }
     },

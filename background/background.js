@@ -71,10 +71,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse('Not Injected');
         return;
     }
-    const runtimeHelpers = ['inject_ace_helper', 'inject_watch_helper', 'inject_req_watcher', 'inject_default_helper'];
+    const runtimeHelpers = [
+        'inject_ace_helper',
+        'inject_watch_helper',
+        'inject_req_watcher',
+        'inject_default_helper',
+    ];
     const runtimePath = 'content_scripts/modules/runtime/';
     if (!runtimeHelpers.includes(message.action)) {
-        console.log(`[background] [Debug] ${message.action} is not in runtime helpers`);
+        console.log(
+            `[background] [Debug] ${message.action} is not in runtime helpers`
+        );
         sendResponse('Not Injected');
         return;
     }

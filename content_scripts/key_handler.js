@@ -43,7 +43,7 @@ function definePageHideNdFullScrnProps() {
             get: function () {
                 return document.documentElement;
             },
-            configurable: true
+            configurable: true,
         });
     } catch (e) {
         console.log('Failed to override document.fullscreenElement:', e);
@@ -78,15 +78,15 @@ function definePageHideNdFullScrnProps() {
 }
 
 function allowCopyPaste() {
-    [
-        'copy',
-        'paste',
-        'onpaste',
-    ].forEach((evt) => {
-        document.addEventListener(evt, (e) => {
-            e.stopImmediatePropagation();
-            return true;
-        }, true);
+    ['copy', 'paste', 'onpaste'].forEach((evt) => {
+        document.addEventListener(
+            evt,
+            (e) => {
+                e.stopImmediatePropagation();
+                return true;
+            },
+            true
+        );
     });
 }
 
@@ -177,7 +177,9 @@ function keydownHandler() {
             }
             if (e.key === 'Backspace') {
                 if (typeof cancelSleep === 'function') {
-                    console.log("[Key Handler] Backspace Encountered: cancelSleep");
+                    console.log(
+                        '[Key Handler] Backspace Encountered: cancelSleep'
+                    );
                     cancelSleep();
                 }
                 if (isTyperActive) {
