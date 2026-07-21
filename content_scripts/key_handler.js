@@ -201,12 +201,14 @@ function keydownHandler() {
                     console.log(
                         '[Key Handler] Backspace encountered stopping Typer'
                     );
+                    return;
                 }
                 if (isDefaultMcqSolverRunning) {
                     isDefaultMcqSolverRunning = false;
                     console.log(
                         '[Key Handler] Backspace encountered stopping Default MCQ Solver'
                     );
+                    return;
                 }
             }
         },
