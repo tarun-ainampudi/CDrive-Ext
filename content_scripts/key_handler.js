@@ -1,5 +1,6 @@
 function eventBlocker(e) {
     e.preventDefault();
+    e.stopPropagation();
     e.stopImmediatePropagation();
     return true;
 }
@@ -21,6 +22,9 @@ function blockEvents() {
         'pagehide',
         'pageshow',
         'pagereveal',
+        'mouseleave',
+        'mouseout',
+        'lostpointercapture'
     ].forEach((evt) => {
         document.addEventListener(evt, eventBlocker, true);
         window.addEventListener(evt, eventBlocker, true);
@@ -39,14 +43,23 @@ function definePageHideNdFullScrnProps() {
     }
 
     try {
-        Object.defineProperty(document, 'fullscreenElement', {
+        Object.defineProperty(document, 'webkitHidden', {
             get: function () {
-                return document.documentElement;
+                return false;
             },
-            configurable: true,
         });
     } catch (e) {
-        console.log('Failed to override document.fullscreenElement:', e);
+        console.log('Failed to override document.webkitHidden:', e);
+    }
+
+    try {
+        Object.defineProperty(document, 'webkitVisibilityState', {
+            get: function () {
+                return 'visible';
+            },
+        });
+    } catch (e) {
+        console.log('Failed to override document.webkitVisibilityState:', e);
     }
 
     try {
@@ -67,6 +80,7 @@ function definePageHideNdFullScrnProps() {
     ) {
         if (
             type === 'visibilitychange' ||
+            type === 'webkitvisibilitychange' ||
             type === 'blur' ||
             type === 'focus' ||
             type === 'fullscreenchange'
